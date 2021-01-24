@@ -1,9 +1,9 @@
 {
     "version": "https://jsonfeed.org/version/1",
-    "title": "Sidey",
+    "title": "Adrian's Place",
     "home_page_url": "/",
     "feed_url": "/feed.json",
-    "description": "Simple and minimalistic jekyll blogging theme.",
+    "description": "Just my place.",
     "icon": "/apple-touch-icon.png",
     "favicon": "/favicon.ico",
     "expired": false,
