@@ -10,7 +10,7 @@ Hi, I'm Adrian. There's more to come here, but if I were to discretise myself:
 - Embarks on cooking journeys every now and then. This season arc's project is making homemade udon noodles, transitioning into a ramen noodle nerd.
 - 2016 - 2020 Computer Science at UNSW. Psyched that I completed Advanced Operating Systems.
 - Software Engineer at Atlassian on the Messaging Team working on our sending e-mail stack.
-- You'll find less techy things on my Insta @ridgetinez. I'm yet to get into Twitter. Contact me via email: <my-insta-handle>@gmail.com 
+- You'll find less techy things on my Insta @ridgetinez. I'm yet to get into Twitter. Contact me via email: < my-insta-handle >@gmail.com 
 
 ### My happy place
 
