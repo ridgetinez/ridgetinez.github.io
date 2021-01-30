@@ -25,9 +25,29 @@ a {
     text-decoration: underline;
 }
 
+a:hover {
+	text-decoration: underline;
+}
+
 pre {
 	margin: .5rem 0;
 	padding: .5rem;
+}
+
+// .comment h4 {
+// 	margin: 1rem, 0;
+// }
+
+.comment p {
+	font-size: small;
+	margin: .5rem, 0;
+	// padding: .5rem, 0;
+}
+
+.comment hr {
+	background: #edf2f7;
+    height: 1px;
+    border: 0;
 }
 
 .post p {
@@ -83,6 +103,10 @@ header a {
 	text-decoration: none;
 }
 
+header a:hover {
+	text-decoration: underline;
+}
+
 header li {
 	margin-bottom: .2rem;
 	text-align: right;
@@ -129,6 +153,7 @@ strong, b {
 	margin-bottom: 0.5rem;
 }
 
+
 .posts ul,header ul {
 	list-style:none;
 }
@@ -140,11 +165,15 @@ strong, b {
 	margin-bottom: .5rem;
 }
 
-.posts li a, .posts li div, .projects li a {
+.posts li a, .posts li div, .projects li a, .comment a {
 	white-space:nowrap;
 	overflow:hidden;
 	text-overflow:ellipsis;
 	text-decoration: none;
+}
+
+.posts li a:hover, .posts li div:hover, .projects li a:hover, .comment a:hover {
+	text-decoration: underline;
 }
 
 .posts li time, .projects li time {
