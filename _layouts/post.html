@@ -2,8 +2,28 @@
 layout: default
 ---
 
+<script>
+  function createComment(username, timestamp, link, body) {
+    console.log(username, timestamp, link);
+    console.log(body)
+  }
+
+  fetch('{{ page.comment_endpoint }}', {
+    method: 'GET',
+    headers: { 'Accept': 'application/vnd.github.v3+json' },
+  })
+    .then(response => response.json())
+    .then(comments => {
+      comments.forEach(comment => {
+        console.log(comment);
+        commentElement = createComment(comment['user']['login'], comment['created_at'], comment['html_url'], comment['body']);
+      });
+    });
+</script>
+
 <section class="post">
   <h2>{{ page.title }}</h2>
+  <h1>{{ page.thread }}</h1>
   {{ content }}
       
 
