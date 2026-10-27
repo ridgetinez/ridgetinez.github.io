@@ -50,3 +50,9 @@ The [current full-page composition](../design/garden/generative-top.png) shows t
 The header now uses an inline SVG with separate body, eyes, bill, feet and leaf layers. The static favicon retains its original drawing. Hovering the mascot or focusing the home link plays a soft two-step waddle, double blink and leaf wobble; it settles after 1.8 seconds. A quieter 2.4-second head tilt/blink begins after 12 seconds, then waits 30–44 seconds between gestures. There is no continuously running animation loop.
 
 `public/mascot.js` uses the browser’s Web Animations API. It cancels gestures and timers while the mascot is offscreen, the tab is hidden, or reduced motion is selected. Returning to view starts a fresh delay. Touch navigation and the home link retain their normal behaviour. No sound, tooltip or extra control is added.
+
+## Knife reveal — 28 October 2026
+
+The owner replaced the hover waddle with a deadpan visual gag. The body and feet stay planted while the viewer-left wing draws a small pixel chef’s knife over 700ms. The blade has a curved silver edge, a dark handle and a cream grip. It stays out while the mascot is hovered or the home link is focused, then tucks away over 260ms. A slight leaf wobble carries through the motion. The original idle blink/head tilt and static favicon remain.
+
+Knife and wing are separate SVG layers. The resting knife is hidden even without CSS. Fast enter/leave changes start from the current blade pose; keyboard focus and pointer hover are tracked together so one cannot dismiss the other. Reduced motion reveals and hides the fixed pose instantly. Hidden tabs and an offscreen header cancel movement; idle timers pause during the interaction.

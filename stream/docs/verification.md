@@ -88,3 +88,7 @@ All 15 tests passed on the development runtime and Node 24.22.1. The archive int
 Browser checks observed both the scheduled idle gesture and keyboard-focus greeting through the mascot's rendered state and body/leaf transforms. The home link retains its accessible name and normal navigation. The archive link showed the three original essay titles. Browser warnings and errors were empty. The actual pointer-hover event uses the same greeting function; hardware pointer movement and OS reduced-motion switching were not re-exercised in this pass.
 
 The root Pages workflow targets `master`, runs commands from `stream/`, and uploads only `stream/dist/`. Deployment completion is recorded by GitHub Actions, rather than inferred from a local build.
+
+### Knife-reveal revision
+
+Syntax/build and whitespace checks passed. Browser review confirmed a stationary body, a held knife pose on keyboard focus, retraction on blur, and repeated reveal/retraction. The same controller handles pointer enter/leave. The icon remains 40px, with its blade extending slightly to the left within the page padding; the name and feed do not move. The static favicon is unchanged. No new dependencies or public content were added.

@@ -30,8 +30,10 @@ for(const [y,left,right] of body) {
 // Small feet and folded wings.
 layer = 'foot-left'; line(19,5,8,'billShade');
 layer = 'foot-right'; line(19,12,15,'billShade');
+layer = 'wing-left';
+for(const [x,y] of [[4,12],[4,13],[5,14],[6,15]])dot(x,y,'shade');
 layer = 'body';
-for(const [x,y] of [[4,12],[4,13],[5,14],[6,15],[16,12],[16,13],[15,14],[14,15]])dot(x,y,'shade');
+for(const [x,y] of [[16,12],[16,13],[15,14],[14,15]])dot(x,y,'shade');
 
 // Wide white eyes with one-cell pupils, then a broad amber bill.
 layer = 'eyes';
@@ -58,5 +60,19 @@ for(let y=0;y<size;y++) for(let x=0;x<size;x++) {
 }
 await writeFile(new URL('../public/favicon.svg',import.meta.url),`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" shape-rendering="crispEdges">\n<!-- Ōtori-sama · original pixel rendition. Character from Spirited Away / Studio Ghibli. -->\n${cells.join('\n')}\n</svg>\n`);
 const group = name => `<g class="otori-${name}">${[...layers.get(name).values()].join('')}</g>`;
-await writeFile(new URL('../public/mascot.svg',import.meta.url),`<svg xmlns="http://www.w3.org/2000/svg" class="signature-mascot" viewBox="0 0 20 20" width="40" height="40" shape-rendering="crispEdges" aria-hidden="true" focusable="false">\n${group('foot-left')}${group('foot-right')}<g class="otori-body">${[...layers.get('body').values()].join('')}${group('eyes')}${group('bill')}${group('leaf')}</g>\n</svg>\n`);
+// A small chef's knife, held by the viewer-left wing. The curved edge widens
+// below its tip; a dark handle and cream grip make it read at two pixels/cell.
+// These cells are separate from the resting drawing and the static favicon.
+const knife = [];
+const knifeRow = (y,left,right,fill) => {
+  for(let x=left;x<=right;x++)knife.push(`<rect x="${x}" y="${y}" width="1" height="1" fill="${fill}"/>`);
+};
+knifeRow(5,1,1,'#f3f7f5'); knifeRow(6,0,1,'#e0e9e7');
+knifeRow(7,-1,1,'#d1dedd');
+for(let y=8;y<=12;y++) {knifeRow(y,-2,1,'#b0c5c5');knifeRow(y,-2,-2,'#f3f7f5');knifeRow(y,1,1,'#7e9c9e');}
+knifeRow(13,-1,2,'#82918b');
+for(let y=14;y<=17;y++)knifeRow(y,0,1,'#785644');
+knifeRow(14,0,0,'#b08a63'); knifeRow(17,0,1,'#503f35');
+knifeRow(14,2,4,colour.light); knifeRow(15,1,4,colour.cream); knifeRow(16,2,3,colour.shade);
+await writeFile(new URL('../public/mascot.svg',import.meta.url),`<svg xmlns="http://www.w3.org/2000/svg" class="signature-mascot" viewBox="0 0 20 20" width="40" height="40" shape-rendering="crispEdges" aria-hidden="true" focusable="false">\n${group('foot-left')}${group('foot-right')}<g class="otori-body">${[...layers.get('body').values()].join('')}${group('wing-left')}${group('eyes')}${group('bill')}${group('leaf')}<g class="otori-knife" opacity="0">${knife.join('')}</g></g>\n</svg>\n`);
 console.log(`Wrote Ōtori-sama (${cells.length} visible cells), with separate animation layers.`);
