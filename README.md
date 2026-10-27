@@ -43,4 +43,4 @@ See [the writing guide](stream/docs/obsidian.md) and [deployment details](stream
 
 The three existing essays remain at their original URLs and are listed at [/archive/](https://ridgetinez.github.io/archive/). Their public HTML and assets are preserved in `stream/legacy-public/`, independently of future Obsidian exports. The stream starts empty, by choice; preview posts are demonstrations only.
 
-The old Jekyll source remains in the repository for reference, with its theme README in `LEGACY-JEKYLL.md`. GitHub Actions builds the Node project rather than Jekyll. The unfinished changes in the separate local checkout at `projects/my-website` were not included in this migration.
+The old Jekyll content and templates remain for reference, with the theme README in `LEGACY-JEKYLL.md`. The unused Ruby dependency manifests were retired; the complete old build remains recoverable at commit `c54852f`. GitHub Actions builds the Node project rather than Jekyll. The unfinished changes in the separate local checkout at `projects/my-website` were not included in this migration.

@@ -1,3 +1,5 @@
+> Historical theme reference. The website now builds from `stream/`. Restore commit `c54852f` in a separate checkout if you need the former Ruby/Jekyll build and its dependency manifests.
+
 # Sidey
 
 Sidey is a simple and minimalistic jekyll blogging theme.

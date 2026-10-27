@@ -9,3 +9,5 @@ The app lives in `stream/`; root Jekyll sources and their Git history remain int
 The builder accepts this explicit archive directory, refuses symlinks/hidden files, and copies it into a staging directory before producing current routes. Current stream routes take precedence on any future overlap. The snapshot stays separate from `content/`, so an Obsidian export or note withdrawal cannot erase an older essay. It does not require Ruby, Jekyll or a production database.
 
 The original public HTML retains its historical styling and wording. It is not presented as new writing or silently imported into the stream. The current reader includes a small Archive link beside RSS.
+
+The retired root Gemfile and Gemfile.lock were removed from the active branch after GitHub reported 13 existing Ruby dependency alerts. The new build does not use Ruby. Both original manifests remain in commit `c54852f`; no legacy dependency is needed to serve the preserved static essays.
