@@ -1,0 +1,36 @@
+[
+
+    {
+
+      "title"    : "Distributed: FAULT TOLERANT ROTORS FOR YOUR DISTRIBUTED GOPHERS",
+      "url"      : "/2022/05/22/distributed-adventures-1",
+      "category" : "",
+      "tags"     : "distributed, golang",
+      "date"     : "2022-05-22 00:00:00 +0000",
+      "discription" : "Learning and implementing distributed systems, a dev log."
+
+    } ,
+
+    {
+
+      "title"    : "Regular Expressions: Simulating an NFA with Rust",
+      "url"      : "/2021/03/07/regexp-1",
+      "category" : "",
+      "tags"     : "compilers, regexp, rust",
+      "date"     : "2021-03-07 00:00:00 +0000",
+      "discription" : "Adventures in Regular Expressions inspired by Russ Cox, implemented in Rust."
+
+    } ,
+
+    {
+
+      "title"    : "Dataflow Analysis I: Introduction &amp; Reaching Definitions",
+      "url"      : "/2021/01/24/dataflow-analysis-1",
+      "category" : "",
+      "tags"     : "compilers, dataflowanalysis",
+      "date"     : "2021-01-24 00:00:00 +0000",
+      "discription" : "Learning about the reaching definition analysis problem common in compilers."
+
+    }
+
+]

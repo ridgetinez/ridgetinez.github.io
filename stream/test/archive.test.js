@@ -1,0 +1,42 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { mkdtemp, mkdir, writeFile, readFile, rm, symlink, unlink } from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
+import { buildSite } from '../src/static.js';
+import { previewSite } from '../scripts/preview.js';
+
+test('the public archive retains old URLs independently of notes and refuses private symlinks',async t => {
+  const root = await mkdtemp(path.join(os.tmpdir(),'ridge-archive-'));
+  t.after(()=>rm(root,{recursive:true,force:true}));
+  const contentDir=path.join(root,'content'),archiveDir=path.join(root,'archive'),outputDir=path.join(root,'site');
+  await mkdir(contentDir);
+  const write = async (file,text) => {await mkdir(path.dirname(file),{recursive:true});await writeFile(file,text);};
+  await write(path.join(contentDir,'posts.json'),JSON.stringify({version:1,posts:[]}));
+  await write(path.join(archiveDir,'archive/index.html'),'<h1>Earlier essays</h1>');
+  await write(path.join(archiveDir,'2021/01/24/essay/index.html'),'<h1>Original essay</h1>');
+  await write(path.join(archiveDir,'assets/diagram.png'),'original diagram bytes');
+  await write(path.join(archiveDir,'index.html'),'must not replace the stream');
+  await buildSite({contentDir,archiveDir,outputDir,siteURL:'https://ridgetinez.github.io/'});
+  const index=await readFile(path.join(outputDir,'index.html'),'utf8');
+  assert.ok(index.includes('No posts yet.'));
+  assert.ok(index.includes('href="/archive/">Archive'));
+  assert.ok(!index.includes('must not replace the stream'));
+  assert.ok(index.includes('otori-eyes') && index.includes('/assets/mascot.js'));
+  const app=await previewSite({directory:outputDir,port:0});
+  t.after(()=>app.close());
+  assert.equal(await (await fetch(app.url+'2021/01/24/essay')).text(),'<h1>Original essay</h1>');
+  assert.equal(await (await fetch(app.url+'assets/diagram.png')).text(),'original diagram bytes');
+  // A public-note export/withdrawal replaces content/, not the old-site snapshot.
+  await rm(contentDir,{recursive:true});await mkdir(contentDir);
+  await write(path.join(contentDir,'posts.json'),JSON.stringify({version:1,posts:[]}));
+  await buildSite({contentDir,archiveDir,outputDir});
+  assert.equal(await readFile(path.join(outputDir,'2021/01/24/essay/index.html'),'utf8'),'<h1>Original essay</h1>');
+  await write(path.join(root,'private.txt'),'private');
+  await symlink(path.join(root,'private.txt'),path.join(archiveDir,'leak.txt'));
+  await assert.rejects(buildSite({contentDir,archiveDir,outputDir}),/symbolic links/);
+  await unlink(path.join(archiveDir,'leak.txt'));
+  await write(path.join(archiveDir,'.env'),'private configuration');
+  await assert.rejects(buildSite({contentDir,archiveDir,outputDir}),/hidden files/);
+  assert.equal(await readFile(path.join(outputDir,'2021/01/24/essay/index.html'),'utf8'),'<h1>Original essay</h1>');
+});

@@ -1,0 +1,15 @@
+node_modules/
+.env
+.env.*
+!.env.example
+data/
+.local/
+backups/
+*.sqlite*
+*.log
+.DS_Store
+coverage/
+dist/
+vault/
+.obsidian/
+.ridge-stage-*/

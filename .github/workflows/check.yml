@@ -1,0 +1,23 @@
+name: Check pull request
+on: pull_request
+permissions:
+  contents: read
+defaults:
+  run:
+    working-directory: stream
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: stream/.nvmrc
+          cache: npm
+          cache-dependency-path: stream/package-lock.json
+      - run: npm ci
+      - run: npm run check
+      - run: npm test
+      - run: npm run build
+        env:
+          SITE_URL: https://example.github.io/ridge/

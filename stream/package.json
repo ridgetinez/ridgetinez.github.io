@@ -1,0 +1,34 @@
+{
+  "name": "ridge",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "start": "npm run build && node --env-file-if-exists=.env scripts/preview.js",
+    "dev": "node --env-file-if-exists=.env scripts/write.js",
+    "demo": "node scripts/static-demo.js",
+    "test": "node --test test/*.test.js",
+    "check": "node --check src/server.js && node --check public/app.js && node --check public/reader.js && node --check public/garden.js && node --check public/mascot.js && node --check src/vault.js && node --check src/static.js && node --check scripts/write.js",
+    "backup": "node --env-file-if-exists=.env scripts/backup.js",
+    "preview": "node --env-file-if-exists=.env scripts/preview.js",
+    "build": "node --env-file-if-exists=.env scripts/build.js",
+    "export": "node --env-file-if-exists=.env scripts/export.js",
+    "vault:init": "node scripts/init-vault.js",
+    "legacy": "node --env-file-if-exists=.env src/server.js",
+    "demo:legacy": "node scripts/demo.js",
+    "publish:prepare": "node --env-file-if-exists=.env scripts/publish-prepare.js"
+  },
+  "dependencies": {
+    "@fontsource-variable/inter": "5.3.0",
+    "busboy": "1.6.0",
+    "file-type": "22.2.0",
+    "highlight.js": "11.12.0",
+    "katex": "0.19.1",
+    "markdown-it": "15.0.3",
+    "sharp": "0.35.5",
+    "yaml": "2.9.1"
+  }
+}

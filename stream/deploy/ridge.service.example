@@ -1,0 +1,26 @@
+# Example only. Assumes code in /opt/ridge, a ridge service user, Node 24+,
+# and a fully configured /etc/ridge.env.
+[Unit]
+Description=ridge personal website
+After=network.target
+
+[Service]
+Type=simple
+User=ridge
+Group=ridge
+WorkingDirectory=/opt/ridge
+EnvironmentFile=/etc/ridge.env
+Environment=RIDGE_DATA_DIR=/var/lib/ridge
+ExecStart=/usr/bin/node src/server.js
+Restart=on-failure
+RestartSec=3
+StateDirectory=ridge
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/ridge
+
+[Install]
+WantedBy=multi-user.target

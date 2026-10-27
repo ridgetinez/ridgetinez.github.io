@@ -1,0 +1,6 @@
+# Example only. Replace the domain during a deliberate deployment.
+# The public reverse proxy points ONLY at the reader.
+your-domain.example {
+    encode zstd gzip
+    reverse_proxy 127.0.0.1:3333
+}
