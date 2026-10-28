@@ -2,6 +2,28 @@
   "version": 1,
   "posts": [
     {
+      "id": "20261028-2200",
+      "body": "Bouldering: Rehabbing the left pinky by idiotically climbing on black crimpy climbs lol. Anytime I get to climb a route is a blessing. With a pinky injury, a wrist injury that's almost healed up, and a meniscus sprain (or maybe even an MCL tear who knows), anytime I can be on the wall is amazing and I feel incredibly happy to be moving.",
+      "tags": [
+        "bouldering",
+        "rehab"
+      ],
+      "links": [],
+      "created_at": "2026-10-28T11:00:00.000Z",
+      "attachments": []
+    },
+    {
+      "id": "20261028-1800",
+      "body": "Math: Working through AOPS geometry, final pset chapter. Pulleys and a memory hook for the angle-bisector theorem.\n\nFor the taut band around pulleys of radii 4 ft and 1 ft, with centres 6 ft apart, I split the length into two straight common tangents and two circular arcs. The useful construction is a rectangle that leaves a right triangle and short leg equal to the difference of the radii (due to the rectangle \"short side\" being the radii of the smaller circle)\n\n$$\n\\ell=\\sqrt{6^2-(4-1)^2}=3\\sqrt3.\n$$\n\nThe contact arcs are $240^\\circ$ and $120^\\circ$, giving\n\n$$\nL=2(3\\sqrt3)+\\frac{240}{360}(8\\pi)+\\frac{120}{360}(2\\pi)\n=6(\\sqrt3+\\pi)\\text{ ft}.\n$$\n\nIf both radii grow by $\\epsilon$, their difference stays fixed, so the right triangle, straight lengths and contact angles stay unchanged. The two arcs together gain\n\n$$\n\\Delta L=\\left(\\frac{240}{360}+\\frac{120}{360}\\right)2\\pi\\epsilon\n=2\\pi\\epsilon,\\qquad 0<\\epsilon<\\tfrac12\\text{ ft}.\n$$\n\n\nFor the angle-bisector theorem, if $BD$ bisects $\\angle ABC$ and meets $AC$ at $D$,\n\n$$\n\\frac{[ABD]}{[CBD]}=\\frac{AD}{DC}=\\frac{AB}{BC}.\n$$\n\nBases $AD,DC$ share a height from $B$; bases $AB,BC$ have equal perpendicular heights from $D$. It's kinda like computing the area of the two triangles two different ways.\n\nWe were still going through revision for the angle subtended by an arc, is half the arc angle, and that if we have three sets of parallel lines, but we only know the outer two are parallel, what are the many ways we can prove that the middle one is also parallel. I had to go bouldering lol.",
+      "tags": [
+        "math",
+        "geometry"
+      ],
+      "links": [],
+      "created_at": "2026-10-28T07:00:00.000Z",
+      "attachments": []
+    },
+    {
       "id": "20261028-0800",
       "body": "Day 3 move yoga. Way easier than the previous days (thank god). Down dog -> three legged dog -> forward lunge is way too stiff. My three legged dog just needs some more time, but the transition to forward lunge feels like something in my anatomy is blocking that movement.",
       "tags": [
