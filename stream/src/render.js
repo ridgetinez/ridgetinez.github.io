@@ -15,7 +15,11 @@ export const mascotMarkup = readFileSync(new URL('../public/mascot.svg',import.m
 export const mascotScript = config => `<script type="module" src="${sitePath(assets['mascot.js'],config)}"></script>`;
 
 const safeJSON = value => JSON.stringify(value).replace(/</g, '\\u003c').replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029');
-const tagClass = tag => ({running:'running', maths:'mathematics', mathematics:'mathematics', coffee:'coffee', cooking:'cooking', gardening:'gardening'}[tag] || 'other');
+function tagPalette(tags) {
+  const names = [...new Set(tags)].sort();
+  return new Map(names.map((tag, index) => [tag, ((210 + index * 360 / names.length) % 360).toFixed(2)]));
+}
+const tagStyle = (tag, palette) => `style="--tag-hue:${palette.get(tag)}"`;
 const tagLabel = tag => tag === 'mathematics' ? 'maths' : tag;
 
 function attachmentHTML(attachment, config = {}) {
@@ -28,12 +32,12 @@ function attachmentHTML(attachment, config = {}) {
   </div>`;
 }
 
-export function renderPost(post, { editor = false, store, timezone = 'Australia/Sydney', permalink = false, config = {} } = {}) {
+export function renderPost(post, { editor = false, store, timezone = 'Australia/Sydney', permalink = false, config = {}, palette = tagPalette(post.tags) } = {}) {
   const date = new Date(post.created_at);
   const time = new Intl.DateTimeFormat('en-AU', { hour:'2-digit', minute:'2-digit', hour12:false, timeZone:timezone }).format(date);
   const links = store ? store.backlinks(post.id).filter(source => source.id !== post.id) : [];
   return `<article class="entry${post.archived_at ? ' is-archived' : ''}" id="entry-${e(post.id)}" data-entry-id="${e(post.id)}">
-    <div class="entry-meta"><a class="entry-time" href="${e(postPath(post.id, config))}"><time datetime="${e(post.created_at)}">${e(time)}</time></a>${post.tags.map(tag => `<a class="tag ${tagClass(tag)}" href="${e(tagPath(tag, config))}">${e(tagLabel(tag))}</a>`).join('')}</div>
+    <div class="entry-meta"><a class="entry-time" href="${e(postPath(post.id, config))}"><time datetime="${e(post.created_at)}">${e(time)}</time></a>${post.tags.map(tag => `<a class="tag" ${tagStyle(tag, palette)} href="${e(tagPath(tag, config))}">${e(tagLabel(tag))}</a>`).join('')}</div>
     <div class="message">${renderMarkdown(post.body, config)}</div>
     <div class="entry-media">${post.attachments.map(attachment => attachmentHTML(attachment, config)).join('')}</div>
     ${links.length ? `<div class="backlinks"><span aria-hidden="true">↳</span>${links.map(source => `<a href="${e(postPath(source.id, config))}">${e(excerpt(source.body, 70))}</a>`).join('')}</div>` : ''}
@@ -59,13 +63,14 @@ function composer() {
 }
 
 export function renderPage({ posts, tags, store, config, editor = false, csrf = '', tag = '', archived = false, single = false, hasMore = false, olderHref = '', currentPath = '' }) {
+  const palette = tagPalette(tags);
   let day = '';
   const dayFormat = new Intl.DateTimeFormat('en-AU', { day:'numeric', month:'long', year:'numeric', timeZone:config.timezone });
   const content = posts.map(post => {
     const key = dayFormat.format(new Date(post.created_at));
     const heading = key !== day ? `${day ? '</section>' : ''}<section class="day-group"><h2 class="day-heading">${e(key)}</h2>` : '';
     day = key;
-    return heading + renderPost(post, { editor, store, timezone:config.timezone, permalink:single, config });
+    return heading + renderPost(post, { editor, store, timezone:config.timezone, permalink:single, config, palette });
   }).join('') + (day ? '</section>' : '');
   const title = single && posts[0] ? `${excerpt(posts[0].body, 70)} · ridge` : 'ridge';
   const canonical = config.static ? new URL(sitePath(currentPath || '/', config), new URL(config.publicOrigin).origin).href : `${config.publicOrigin}${single ? '/p/' + posts[0].id : tag ? '/?tag=' + encodeURIComponent(tag) : '/'}`;
@@ -77,7 +82,7 @@ ${editor ? '<meta name="robots" content="noindex,nofollow"><meta name="csrf-toke
 <link rel="alternate" type="application/rss+xml" title="ridge" href="${e(config.publicOrigin)}/feed.xml"><script type="module" src="${sitePath(assets[config.static ? 'reader.js' : 'app.js'], config)}"></script><script type="module" src="${sitePath(assets['garden.js'], config)}"></script>
 </head><body>${mascotScript(config)}<div class="page">
 <header class="masthead"><a href="${sitePath('/', config)}" class="signature">${mascotMarkup}ridge</a>${editor ? `<div class="owner-nav">${config.demo ? '<span class="demo-label">Demo</span>' : ''}<a href="${e(config.publicOrigin)}" target="_blank" rel="noopener">Public view ↗</a></div>` : ''}</header>
-${!single ? `<nav class="filters" aria-label="Filter posts"><a class="filter filter-all" href="${sitePath('/', config)}" ${!tag && !archived ? 'aria-current="page"' : ''}>All</a>${tags.map(value => `<a class="filter ${tagClass(value)}" href="${e(tagPath(value, config))}" ${tag === value ? 'aria-current="page"' : ''}>${e(tagLabel(value))}</a>`).join('')}${editor ? `<a class="archive-filter" href="/?archived=1" ${archived ? 'aria-current="page"' : ''}>Archived</a>` : ''}</nav>` : ''}
+${!single ? `<nav class="filters" aria-label="Filter posts"><a class="filter filter-all" href="${sitePath('/', config)}" ${!tag && !archived ? 'aria-current="page"' : ''}>All</a>${tags.map(value => `<a class="filter" ${tagStyle(value, palette)} href="${e(tagPath(value, config))}" ${tag === value ? 'aria-current="page"' : ''}>${e(tagLabel(value))}</a>`).join('')}${editor ? `<a class="archive-filter" href="/?archived=1" ${archived ? 'aria-current="page"' : ''}>Archived</a>` : ''}</nav>` : ''}
 ${editor && !archived ? composer() : ''}
 <main id="entries" aria-label="Posts">${content || '<p class="empty">No posts yet.</p>'}</main>
 ${hasMore && posts.length ? `<a class="older" href="${olderHref || `/?${tag ? 'tag=' + encodeURIComponent(tag) + '&' : ''}${archived ? 'archived=1&' : ''}before=${e(posts.at(-1).id)}`}">Older posts ↓</a>` : ''}

@@ -1,0 +1,5 @@
+{
+  "folder": "Templates",
+  "dateFormat": "YYYY-MM-DD",
+  "timeFormat": "[\n\n### ]HH:mm[\ntags:\n\n]"
+}

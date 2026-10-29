@@ -89,6 +89,26 @@ test('static build supports project paths, root domains, filters, pagination, ba
   assert.match(await readFile(path.join(f.outputDir,'feed.xml'),'utf8'),/https:\/\/ridge.example\/p\/n-0\//);
 });
 
+test('all tag names get distinct colours shared by filters, entries and permalinks', async t => {
+  const f = await fixture(t);
+  const tags = ['yoga', 'bouldering', 'cooking', 'geometry', 'math', 'rehab', 'custom-tag'];
+  await f.note('colours','A note with manually chosen tags.');
+  const filename = path.join(f.vault,'colours.md');
+  await writeFile(filename,(await readFile(filename,'utf8')).replace('tags: [coffee]',`tags: [${tags.join(', ')}]`));
+  await exportVault(f.vault,f.contentDir);
+  await buildSite(f);
+  const colours = (html, type) => new Map([...html.matchAll(new RegExp(`<a class="${type}" style="--tag-hue:([^\"]+)" href="/tag/([^\"]+)/"`,'g'))].map(([,hue,tag]) => [tag,hue]));
+  const home = await readFile(path.join(f.outputDir,'index.html'),'utf8');
+  const filters = colours(home,'filter');
+  assert.equal(filters.size,tags.length);
+  assert.equal(new Set(filters.values()).size,tags.length);
+  assert.deepEqual(colours(home,'tag'),filters);
+  const filtered = await readFile(path.join(f.outputDir,'tag/cooking/index.html'),'utf8');
+  const permalink = await readFile(path.join(f.outputDir,'p/colours/index.html'),'utf8');
+  assert.deepEqual(colours(filtered,'tag'),filters);
+  assert.deepEqual(colours(permalink,'tag'),filters);
+});
+
 test('withdrawing a note removes its page and unreferenced media from the next complete build', async t => {
   const f = await fixture(t);
   await copyFile(new URL('../examples/coffee.jpg',import.meta.url),path.join(f.vault,'Attachments/photo.jpg'));
