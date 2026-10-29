@@ -2,6 +2,46 @@
   "version": 1,
   "posts": [
     {
+      "id": "20261029-1928",
+      "body": "5 problems (357-361) in ~1hr10. Touched on centroid bisects medians in a 2:1 ratio, and using that in a similarity problem within an inscribed circle. The difficulty for that problem tbh is drawing the right picture. For example, drawing the equilateral triangles on top of each other will directly get us getting the ratio of their altitudes.\n\n\n\nNo particularly hard problems this session. We intuitively know that for parallel tangents on the same circle, their points of tangency are collinear with the center of the circle. However, I couldn't find an intuitive direct proof for this, and had to use contradiction (suppose that they weren't collinear, then the co-interior angles of the parallel lines couldn't be supplementary).\n\nMeta learning: immediately writing down the next problem as a rote activity helps to keep me focused and lessens the chance I doom-scroll on twitter between questions.",
+      "tags": [
+        "math",
+        "geometry"
+      ],
+      "links": [],
+      "created_at": "2026-10-29T08:28:00.000Z",
+      "attachments": [
+        {
+          "id": "0d5aef6163b33911ada30e9da7ca96185de7b280b5b4a38bb3ed3e3b51fefccd",
+          "filename": "0d5aef6163b33911ada30e9da7ca96185de7b280b5b4a38bb3ed3e3b51fefccd.webp",
+          "kind": "image",
+          "name": "Pasted image 20261029193108.png",
+          "alt": "",
+          "transcript": ""
+        }
+      ]
+    },
+    {
+      "id": "20261029-1638",
+      "body": "Chapter 5 on standard deviations. This one about abuse of graphs and figures to tell misleading stories about data. The one that most stuck out to me is a mistake I've made in the past: always prioritise conveying the data and story well, over making your graph being visually compelling. During the my IMC internship final presentation, I was so focused on making the components in a system diagram \"look cool\". Normally, these components would be boxes, connected to other components they interact with via lines. In my case, I added all these fancy line joinery, made the boxes look like chips, and while I enjoyed it, I definitely could've used that time to instead prepare better insights to communicate about my project. \n\nThe rest of the chapter has more on inspecting the axis, how omitting zero can allow for arbitrary magnitude comparisons between different lines on the graph, and a couple of other things, but that's all known stuff. USUALLY, when these are forgotten, someone's trying to forward an agenda with a misconstrued graph.",
+      "tags": [
+        "reading"
+      ],
+      "links": [],
+      "created_at": "2026-10-29T05:38:00.000Z",
+      "attachments": []
+    },
+    {
+      "id": "20261029-1554",
+      "body": "Day 4 ✅ Learnt about [ujjayi breathing](https://www.youtube.com/watch?v=IQrsJ-yZWV8) because I was like, how the hell is she inhaling and making such a loud noise. Most of my inhales through the nose are silent! Turns out it's a breathing technique, where you slightly restrict the back of the throat (almost like you're a quarter way through a snore?) and you get that audible sound, followed by an aggressive, try to fog up the mirror without opening your mouth exhale. No idea if it's useful, but a cool internal movement technique that you can sync up with external moves e.g. each move is preceded by an inhale / exhale, and you do moves at your breathing pace.",
+      "tags": [
+        "yoga"
+      ],
+      "links": [],
+      "created_at": "2026-10-29T04:54:00.000Z",
+      "attachments": []
+    },
+    {
       "id": "20261029-1450",
       "body": "Finished cooking some shawarma using the [miya miya recipe](https://www.joshuaweissman.com/recipes/the-best-homemade-chicken-shawarma-sandwich-recipe). Way too much clove (the 4g of cloves in the recipe must be wrong), and I also should've cooked it across two sheet trays instead of basically boiling it in one. Made toum as well, first trying a [handstick blender technique](https://forksandfoliage.com/easiest-toum-garlic-dip/), but that didn't emulsify the oil correctly, so had to whip out the egg white to save the broken mixture. Using egg whites makes it feel more like a smooth mayonaise-y emulsion which isn't what I want from a THICK toum. Next time, let's not be lazy and just get the food processor out to do the job right, especially for a larger batch size that'll be in the fridge for a bit.\n\nThe fattoush came out amazing though. Used fried tortilla wraps as the crispy bits on top, and chucked cucumbers, shallots, tomatoes, mint, parsley and different lettuces all together with a sumac, pomegranate molasses vinaigrette.",
       "tags": [
