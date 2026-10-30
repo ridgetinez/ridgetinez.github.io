@@ -2,6 +2,59 @@
   "version": 1,
   "posts": [
     {
+      "id": "20261030-2330",
+      "body": "8 questions (363–370).\n\n\n\n![368: congruent right triangles BPA and BCQ](/diagrams/14a8f00174fae8c65413e9dd727a84a0946b149a3b2edf01122ec2b032f4a675.svg)\n\n![368: coordinates and the midpoint B](/diagrams/423e0e90036aa294f91adef44dfc978d876923f90a4a116cb608f515e72c9e67.svg)\n\n![368: the 13-unit corner displacement](/diagrams/fa9052c05ffa8f95963c46fae79bdd51b1f3e94d470d3298c74047685d59d506.svg)\n\n![368: equal tangents and the radius square](/diagrams/548abee947f5f9e7610b4e35762f111e70950857c9003468433e3d56c12e54f8.svg)\n\n![368: the distance between P and Q](/diagrams/84cd595d54af604ca4ee936c2695fb04bbaed8f53bef77f49b2d4d7196c7918f.svg)",
+      "tags": [
+        "math",
+        "geometry"
+      ],
+      "links": [],
+      "created_at": "2026-10-30T12:30:00.000Z",
+      "attachments": [],
+      "diagrams": [
+        {
+          "filename": "14a8f00174fae8c65413e9dd727a84a0946b149a3b2edf01122ec2b032f4a675.svg",
+          "alt": "368: congruent right triangles BPA and BCQ"
+        },
+        {
+          "filename": "423e0e90036aa294f91adef44dfc978d876923f90a4a116cb608f515e72c9e67.svg",
+          "alt": "368: coordinates and the midpoint B"
+        },
+        {
+          "filename": "fa9052c05ffa8f95963c46fae79bdd51b1f3e94d470d3298c74047685d59d506.svg",
+          "alt": "368: the 13-unit corner displacement"
+        },
+        {
+          "filename": "548abee947f5f9e7610b4e35762f111e70950857c9003468433e3d56c12e54f8.svg",
+          "alt": "368: equal tangents and the radius square"
+        },
+        {
+          "filename": "84cd595d54af604ca4ee936c2695fb04bbaed8f53bef77f49b2d4d7196c7918f.svg",
+          "alt": "368: the distance between P and Q"
+        }
+      ]
+    },
+    {
+      "id": "20261030-2100",
+      "body": "2x practice! day 6 is psychological and physical torture on your abdominals.",
+      "tags": [
+        "yoga"
+      ],
+      "links": [],
+      "created_at": "2026-10-30T10:00:00.000Z",
+      "attachments": []
+    },
+    {
+      "id": "20261030-0816",
+      "body": "👑 day 5, longer poses and yogi squats, also",
+      "tags": [
+        "yoga"
+      ],
+      "links": [],
+      "created_at": "2026-10-29T21:16:00.000Z",
+      "attachments": []
+    },
+    {
       "id": "20261029-1928",
       "body": "5 problems (357-361) in ~1hr10. Touched on centroid bisects medians in a 2:1 ratio, and using that in a similarity problem within an inscribed circle. The difficulty for that problem tbh is drawing the right picture. For example, drawing the equilateral triangles on top of each other will directly get us getting the ratio of their altitudes.\n\n\n\nNo particularly hard problems this session. We intuitively know that for parallel tangents on the same circle, their points of tangency are collinear with the center of the circle. However, I couldn't find an intuitive direct proof for this, and had to use contradiction (suppose that they weren't collinear, then the co-interior angles of the parallel lines couldn't be supplementary).\n\nMeta learning: immediately writing down the next problem as a rote activity helps to keep me focused and lessens the chance I doom-scroll on twitter between questions.",
       "tags": [
