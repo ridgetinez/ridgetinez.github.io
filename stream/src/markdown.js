@@ -2,6 +2,7 @@ import MarkdownIt from 'markdown-it';
 import katex from 'katex';
 import hljs from 'highlight.js/lib/common';
 import { sitePath } from './urls.js';
+import { sanitizeDiagramSVG } from './diagrams.js';
 
 export const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 const md = new MarkdownIt({
@@ -64,6 +65,12 @@ md.renderer.rules.link_open = (tokens, index, options, env, renderer) => {
 const defaultImage = md.renderer.rules.image;
 md.renderer.rules.image = (tokens, index, options, env, renderer) => {
   const src = tokens[index].attrGet('src');
+  const diagram = env.diagramAssets?.get(src);
+  if (diagram && env.inlineDiagrams !== false) {
+    const prefix = `${env.diagramPrefix || 'diagram'}-${env.diagramIndex++}-`;
+    const svg = sanitizeDiagramSVG(diagram, {prefix, alt:tokens[index].content || 'Geometry diagram', standalone:false});
+    return `<span class="geometry-diagram">${svg}</span>`;
+  }
   if (src?.startsWith('/') && !src.startsWith('//')) tokens[index].attrSet('src', (env.absoluteOrigin || '') + sitePath(src, env));
   return defaultImage(tokens, index, options, env, renderer);
 };
@@ -73,7 +80,7 @@ export const markdownTokens = body => md.parse(body, {});
 export function renderMarkdown(body, options = {}) {
   // The IDs and label grammar cannot introduce HTML or Markdown destinations.
   const source = String(body).replace(/\[\[([a-zA-Z0-9-]{1,80})\|([^\]\n]+)\]\]/g, (_, id, label) => `[${label.replace(/[\[\]\\]/g, '\\$&')}](/p/${id})`);
-  return md.render(source, options);
+  return md.render(source, {...options,diagramIndex:0});
 }
 
 export function excerpt(body, length = 90) {

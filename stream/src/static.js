@@ -6,6 +6,7 @@ import { siteConfiguration, sitePath } from './urls.js';
 import { renderPage, renderRSS, mascotMarkup, mascotScript } from './render.js';
 import { escapeHTML as e } from './markdown.js';
 import { archiveFiles } from './archive.js';
+import { sanitizeDiagramSVG } from './diagrams.js';
 
 export async function buildSite({ contentDir = path.join(projectRoot,'content'), outputDir = path.join(projectRoot,'dist'), siteURL, timezone, archiveDir } = {}) {
   contentDir = await realpath(contentDir);
@@ -19,6 +20,8 @@ export async function buildSite({ contentDir = path.join(projectRoot,'content'),
   const posts = data.posts;
   const ids = new Set();
   const filenames = new Set();
+  const diagramFiles = new Map();
+  config.diagramAssets = new Map();
   for (const post of posts) {
     if (!/^[a-zA-Z0-9][a-zA-Z0-9-]{0,79}$/.test(post.id) || ids.has(post.id)) throw new Error('Invalid or duplicate post ID.');
     ids.add(post.id);
@@ -28,6 +31,15 @@ export async function buildSite({ contentDir = path.join(projectRoot,'content'),
       const filename = await realpath(path.join(contentDir,'media',attachment.filename));
       if (!inside(contentDir,filename) || !(await stat(filename)).isFile()) throw new Error('Media must be files in the public snapshot.');
       filenames.add(attachment.filename);
+    }
+    if (post.diagrams !== undefined && (!Array.isArray(post.diagrams) || post.diagrams.length > 8)) throw new Error(`Invalid diagrams for ${post.id}.`);
+    for (const diagram of post.diagrams || []) {
+      if (!/^[a-f0-9]{64}\.svg$/.test(diagram.filename) || typeof diagram.alt !== 'string') throw new Error(`Invalid diagram for ${post.id}.`);
+      const filename = await realpath(path.join(contentDir,'diagrams',diagram.filename));
+      if (!inside(contentDir,filename) || !(await stat(filename)).isFile()) throw new Error('Diagrams must be files in the public snapshot.');
+      const svg = sanitizeDiagramSVG(await readFile(filename,'utf8'));
+      diagramFiles.set(diagram.filename,svg);
+      config.diagramAssets.set('/diagrams/' + diagram.filename,svg);
     }
   }
   for (const post of posts) if (post.links.some(id => !ids.has(id))) throw new Error(`Broken reference in ${post.id}. Re-export the vault.`);
@@ -68,6 +80,10 @@ export async function buildSite({ contentDir = path.join(projectRoot,'content'),
     await copyFile(path.join(projectRoot,'node_modules/katex/LICENSE'),path.join(stage,'assets/katex/LICENSE.txt'));
     await mkdir(path.join(stage,'media'));
     for (const name of filenames) await copyFile(path.join(contentDir,'media',name),path.join(stage,'media',name));
+    if (diagramFiles.size) {
+      await mkdir(path.join(stage,'diagrams'));
+      for (const [name,svg] of diagramFiles) await writeFile(path.join(stage,'diagrams',name),svg);
+    }
     await write('.nojekyll','');
     await write('.ridge-static','Generated public site. Safe to replace with the next build.\n');
   });

@@ -6,6 +6,7 @@ import sharp from 'sharp';
 import { fileTypeFromBuffer } from 'file-type';
 import { markdownTokens } from './markdown.js';
 import { inside, replaceDirectory, resolveDestination } from './files.js';
+import { compileTikz } from './diagrams.js';
 
 const hash = value => createHash('sha256').update(value).digest('hex');
 const imageTypes = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/avif', 'image/gif']);
@@ -101,10 +102,12 @@ export async function exportVault(vault, output) {
   }
 
   const posts = [];
+  const compiledDiagrams = new Map();
   await replaceDirectory(output, '.ridge-content', async stage => {
     await mkdir(path.join(stage,'media'));
+    await mkdir(path.join(stage,'diagrams'));
     for (const entry of entries) {
-      const attachments = [], links = new Set();
+      const attachments = [], diagrams = [], links = new Set();
       function link(target, label) {
         if (target.includes('#')) throw new Error(`${entry.filename}: heading/block links are not supported yet. Link to the whole note.`);
         let destination = byID.get(target);
@@ -119,6 +122,22 @@ export async function exportVault(vault, output) {
         const filename = resolve(target, entry.filename);
         const full = await realpath(path.join(root,filename));
         if (!inside(root,full)) throw new Error('Attachment escaped the vault.');
+        if (path.extname(filename).toLowerCase() === '.svg') {
+          // The preview is convenient for Obsidian, but never trust that SVG as
+          // input. Regenerate its adjacent restricted TikZ source at export.
+          const sourceName = filename.slice(0,-4) + '.tikz';
+          if (!files.includes(sourceName)) throw new Error(`${entry.filename}: SVG diagrams need an adjacent .tikz source; arbitrary SVG attachments are unsupported.`);
+          const sourceFile = await realpath(path.join(root,sourceName));
+          if (!inside(root,sourceFile) || (await stat(sourceFile)).size > 24000) throw new Error('Invalid TikZ source.');
+          const source = await readFile(sourceFile,'utf8');
+          if (!compiledDiagrams.has(source)) compiledDiagrams.set(source,await compileTikz(source));
+          const svg = compiledDiagrams.get(source), id = hash(svg), publishedName = id + '.svg';
+          await writeFile(path.join(stage,'diagrams',publishedName),svg);
+          const alt = label && !/^\d+(?:x\d+)?$/.test(label) ? label : path.basename(filename,'.svg');
+          if (diagrams.length >= 8) throw new Error(`${entry.filename}: use up to eight diagrams per entry.`);
+          diagrams.push({filename:publishedName,alt});
+          return `![${alt.replace(/[\[\]\\]/g,'\\$&')}](/diagrams/${publishedName})`;
+        }
         if ((await stat(full)).size > 15 * 1024 * 1024) throw new Error(`${entry.filename}: ${target} exceeds 15 MB.`);
         const original = await readFile(full), type = await fileTypeFromBuffer(original);
         let buffer, kind, extension;
@@ -143,6 +162,7 @@ export async function exportVault(vault, output) {
         });
         return replaceAsync(text, /(!?)\[([^\]\n]*)\]\((<[^>]+>|[^\s)]+)(?:\s+"[^"]*")?\)/g, async match => {
           const target = match[3].replace(/^<|>$/g,'');
+          if (match[1] && diagrams.some(item => target === '/diagrams/' + item.filename)) return match[0];
           if (/^https?:\/\//i.test(target) || target.startsWith('#') || /^(mailto:|tel:)/i.test(target)) return match[0];
           if (target.startsWith('/p/')) { const id = target.slice(3).replace(/\/$/,''); if (byID.has(id)) return link(id,match[2]); }
           if (match[1]) return media(target,match[2]);
@@ -155,7 +175,8 @@ export async function exportVault(vault, output) {
         for (const token of tokens) {
           if (token.type === 'image' || token.type === 'link_open') {
             const destination = token.attrGet(token.type === 'image' ? 'src' : 'href');
-            if (destination && !/^(https?:\/\/|mailto:|tel:|#)/i.test(destination) && !/^\/p\/[a-zA-Z0-9-]+$/.test(destination)) throw new Error(`${entry.filename}: unsupported local link ${destination}. Use [[note]] or ![[file]] syntax.`);
+            const diagram = token.type === 'image' && diagrams.some(item => destination === '/diagrams/' + item.filename);
+            if (destination && !diagram && !/^(https?:\/\/|mailto:|tel:|#)/i.test(destination) && !/^\/p\/[a-zA-Z0-9-]+$/.test(destination)) throw new Error(`${entry.filename}: unsupported local link ${destination}. Use [[note]] or ![[file]] syntax.`);
           }
           if (token.children) validate(token.children);
         }
@@ -163,7 +184,7 @@ export async function exportVault(vault, output) {
       validate(markdownTokens(body));
       if (!body && !attachments.length) throw new Error(`${entry.filename}: this published entry is empty.`);
       if (body.length > 30000) throw new Error(`${entry.filename}: keep entries under 30,000 characters.`);
-      posts.push({ id:entry.id, body, tags:entry.tags, links:[...links], created_at:entry.date, attachments });
+      posts.push({ id:entry.id, body, tags:entry.tags, links:[...links], created_at:entry.date, attachments, ...(diagrams.length ? {diagrams} : {}) });
     }
     posts.sort((a,b) => b.created_at.localeCompare(a.created_at) || b.id.localeCompare(a.id));
     await writeFile(path.join(stage,'posts.json'),JSON.stringify({version:1,posts},null,2) + '\n');

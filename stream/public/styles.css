@@ -36,3 +36,10 @@ footer{display:flex;gap:18px}
 .filters .filter[aria-current=page]{color:var(--filter-ink);background:var(--filter-wash);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--filter-ink) 36%,transparent),0 1px 0 color-mix(in srgb,var(--filter-ink) 18%,transparent)}
 .filters .filter:hover{transform:translateY(-1px)}
 @media(pointer:coarse){.filters .filter{min-height:44px}}
+
+/* Authored-position geometry: transparent, static, with the page's ink. */
+.geometry-diagram{display:block;max-width:540px;margin:24px auto;line-height:0;color:inherit}
+.geometry-diagram svg{display:block;width:100%;height:auto;max-height:none;overflow:visible}
+.geometry-diagram [stroke="#5e785d"]{stroke:light-dark(#5e785d,#a8b69d)}
+.geometry-diagram [fill="#5e785d"]{fill:light-dark(#5e785d,#a8b69d)}
+@media(max-width:560px){.geometry-diagram{margin:20px auto}}
