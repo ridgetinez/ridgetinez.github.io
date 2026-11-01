@@ -2,6 +2,54 @@
   "version": 1,
   "posts": [
     {
+      "id": "20261031-2200",
+      "body": "2 problems ticked off. Computing maximum diagonal length on a dodecagon, and hexagon area derived from an inscribed triangle and their perpendicular bisectors. For the latter, it nicely breaks down into a sum of 6 triangles, all meeting at the circle's center, and the height of pairs of triangles sum up to the radius.",
+      "tags": [
+        "math"
+      ],
+      "links": [],
+      "created_at": "2026-10-31T11:00:00.000Z",
+      "attachments": []
+    },
+    {
+      "id": "20261031-2127",
+      "body": "I've never really craved kimchi jiggae, but [adding the spam in this short](https://www.youtube.com/watch?v=MN2hjIef7o0) got me. Pretty much the same recipe except using a kombu + niboshi dashi instead of water, and pre-sear the spam instead of adding it in to the boil.",
+      "tags": [
+        "cooking"
+      ],
+      "links": [],
+      "created_at": "2026-10-31T10:27:00.000Z",
+      "attachments": []
+    },
+    {
+      "id": "20261031-1240",
+      "body": "leesa beat me on the \"first to 100km\" race. obligatory loser (me) got the winner (her) heytea.",
+      "tags": [],
+      "links": [],
+      "created_at": "2026-10-31T01:40:00.000Z",
+      "attachments": []
+    },
+    {
+      "id": "20261031-1230",
+      "body": "standard deviations readings. i FINALLY viscerally understand the monty hall problem. The daughter on a walk paradox was trippy though, or at least how the author describes it, the result makes intuitive sense to me.",
+      "tags": [
+        "reading"
+      ],
+      "links": [],
+      "created_at": "2026-10-31T01:30:00.000Z",
+      "attachments": []
+    },
+    {
+      "id": "20261031-1109",
+      "body": "day 7 ✅ reeling from TL loss and during G2 getting clapped. feels sadge man.",
+      "tags": [
+        "yoga"
+      ],
+      "links": [],
+      "created_at": "2026-10-31T00:09:00.000Z",
+      "attachments": []
+    },
+    {
       "id": "20261030-2330",
       "body": "8 questions (363–370).\n\n\n\n![368: congruent right triangles BPA and BCQ](/diagrams/14a8f00174fae8c65413e9dd727a84a0946b149a3b2edf01122ec2b032f4a675.svg)\n\n![368: coordinates and the midpoint B](/diagrams/423e0e90036aa294f91adef44dfc978d876923f90a4a116cb608f515e72c9e67.svg)\n\n![368: the 13-unit corner displacement](/diagrams/fa9052c05ffa8f95963c46fae79bdd51b1f3e94d470d3298c74047685d59d506.svg)\n\n![368: equal tangents and the radius square](/diagrams/548abee947f5f9e7610b4e35762f111e70950857c9003468433e3d56c12e54f8.svg)\n\n![368: the distance between P and Q](/diagrams/84cd595d54af604ca4ee936c2695fb04bbaed8f53bef77f49b2d4d7196c7918f.svg)",
       "tags": [
