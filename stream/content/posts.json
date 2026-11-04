@@ -2,6 +2,46 @@
   "version": 1,
   "posts": [
     {
+      "id": "20261104-2255",
+      "body": "I had a lovely lunch with Apurva yesterday, and on the menu was pork loin with rosemary jus. It got me thinking that I've never cooked a pork loin roast, despite how much cheaper it is than pork belly (and dare I say healthier?) A random loin roast from Coles, 100C for 2 hours until internal reaches 56C and then 275C until crispy and golden brown and yep. It's delicious. For $11 a kilo, it's an insane deal. Served alongside pinto beans I had bought maybe 4 years ago, dressed with a [salsa verde](https://www.greatbritishchefs.com/recipes/braised-pork-belly-with-cannellini-beans-recipe).",
+      "tags": [
+        "cooking"
+      ],
+      "links": [],
+      "created_at": "2026-11-04T11:55:00.000Z",
+      "attachments": [
+        {
+          "id": "92ceede567b7dc0a1400f1be9ebc6e0750e28f298100a9960710d455fc4d595c",
+          "filename": "92ceede567b7dc0a1400f1be9ebc6e0750e28f298100a9960710d455fc4d595c.webp",
+          "kind": "image",
+          "name": "2026-11-04-pork-and-beans.jpg",
+          "alt": "Roast pork loin and pinto beans with salsa verde, side by side",
+          "transcript": ""
+        }
+      ]
+    },
+    {
+      "id": "20261104-2025",
+      "body": "1 problem so far. Classic case of \"whenever there's a base and altitude, and we need to compute some side length, use areas\". Also useful meta cognition technique time and time again: when we've exhausted an observation, always draw out a new diagram to explore new observations.",
+      "tags": [
+        "math",
+        "geometry"
+      ],
+      "links": [],
+      "created_at": "2026-11-04T09:25:00.000Z",
+      "attachments": []
+    },
+    {
+      "id": "20261104-1230",
+      "body": "day 8 & 9 get innn. the right knee is wack rn though.",
+      "tags": [
+        "yoga"
+      ],
+      "links": [],
+      "created_at": "2026-11-04T01:30:00.000Z",
+      "attachments": []
+    },
+    {
       "id": "20261031-2200",
       "body": "2 problems ticked off. Computing maximum diagonal length on a dodecagon, and hexagon area derived from an inscribed triangle and their perpendicular bisectors. For the latter, it nicely breaks down into a sum of 6 triangles, all meeting at the circle's center, and the height of pairs of triangles sum up to the radius.",
       "tags": [
