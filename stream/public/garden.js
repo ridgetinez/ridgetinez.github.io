@@ -1,3 +1,5 @@
+import {mountGardenOffThread} from './garden-host.js';
+import {createGardenPair} from './garden-gl.js';
 // Top-down foliage, sampled into coloured cells. Each leaf is a small spring:
 // wind moves it gently; a passing pointer displaces it, then it settles back.
 const TAU = Math.PI * 2;
@@ -195,11 +197,19 @@ function drawNasturtium(ctx, traits) {
   }
 }
 
-function makeTexture(traits) {
-  const canvas = document.createElement('canvas');
-  canvas.width = canvas.height = 384;
-  const ctx = canvas.getContext('2d', { willReadFrequently:true });
-  if (!ctx) return null;
+export function createGardenTexture(traits, requestedSize) {
+  const bitmapSize=typeof document==='undefined'?192:384, rasterScale=bitmapSize/384;
+  const canvas=typeof document==='undefined'?new OffscreenCanvas(bitmapSize,bitmapSize):document.createElement('canvas');
+  canvas.width=canvas.height=bitmapSize;
+  const raw=canvas.getContext('2d',{willReadFrequently:true});
+  if(!raw)return null;
+  raw.scale(rasterScale,rasterScale);
+  // Preserve world-space geometry and shadow extents while supersampling at
+  // twice the common 96px texture size instead of four times that size.
+  const ctx=rasterScale===1?raw:new Proxy(raw,{
+    get(target,key){const value=Reflect.get(target,key,target);return typeof value==='function'?value.bind(target):value;},
+    set(target,key,value){target[key]=['shadowBlur','shadowOffsetX','shadowOffsetY'].includes(key)?value*rasterScale:value;return true;}
+  });
   const radius = 156;
   ctx.translate(192, 192);
 
@@ -210,8 +220,8 @@ function makeTexture(traits) {
   }
   // Filter the drawing before sampling cells. Thin veins otherwise alias
   // into disconnected bright dots, especially in the narrower side gutters.
-  const levels = [64, 96, 128, 192].map(size => {
-    const filtered = document.createElement('canvas');
+  const levels = (requestedSize ? [requestedSize] : [64, 96, 128, 192]).map(size => {
+    const filtered = typeof document === 'undefined' ? new OffscreenCanvas(size,size) : document.createElement('canvas');
     filtered.width = filtered.height = size;
     const filter = filtered.getContext('2d', { willReadFrequently:true });
     filter.imageSmoothingQuality = 'high';
@@ -221,16 +231,47 @@ function makeTexture(traits) {
   return { levels };
 }
 
-function mountGarden() {
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
-  if (!ctx) return;
-  const textures = createGardenCache(makeTexture);
+export function mountGarden(runtime=globalThis) {
+  const {document,window,navigator,Worker,ResizeObserver}=runtime;
+  const matchMedia=query=>runtime.matchMedia(query);
+  const requestAnimationFrame=callback=>runtime.requestAnimationFrame(callback);
+  const cancelAnimationFrame=id=>runtime.cancelAnimationFrame(id);
+  const performance=runtime.performance;
+  const useFallback=()=>runtime.onFallback?runtime.onFallback():import('./garden-2d.js');
+  const profileMetrics=document.documentElement.hasAttribute('data-garden-metrics');
+  const canvas = document.createElement('canvas'),rightCanvas=document.createElement('canvas');
+  let painter;
+  try {painter=createGardenPair(canvas,rightCanvas);}catch(error){console.warn('Garden GPU renderer unavailable:',error);}
+  if (!painter) {useFallback();return;}
+  const textures = new Map();
+  const workers=[];
+  try {for(let index=0;index<Math.min(4,Math.max(1,(navigator.hardwareConcurrency||4)-1));index++)workers.push({worker:new Worker(new URL('./garden-worker.js',import.meta.url),{type:'module'}),key:null});}
+  catch {workers?.forEach(slot=>slot.worker.terminate());painter.dispose();useFallback();return;}
+  let pending=[],disposed=false;
+  const inFlight=new Set();
+  const textureSize=item=>[64,96,128,192].find(size=>size>=384/(156/item.radius*8.5*.7))||192;
+  const textureKey=item=>`${item.id}:${textureSize(item)}`;
+  function prepare(){
+    if(disposed||document.hidden||!room.matches)return;
+    for(const slot of workers){
+      if(slot.key)continue;
+      while(pending.length){const item=pending.shift(),key=textureKey(item);if(textures.has(key)||inFlight.has(key))continue;
+        slot.key=key;inFlight.add(key);slot.worker.postMessage({key,item,size:textureSize(item)});break;}
+    }
+  }
+  function fallback(){if(disposed)return;disposed=true;workers.forEach(slot=>slot.worker.terminate());cancelAnimationFrame(raf);observer.disconnect();painter.dispose();scene.remove();useFallback();}
+  for(const surface of [canvas,rightCanvas])surface.addEventListener('webglcontextlost',event=>{event.preventDefault();fallback();},{once:true});
+  for(const slot of workers){
+    slot.worker.onerror=fallback;
+    slot.worker.onmessage=({data})=>{if(disposed)return;if(profileMetrics)scene.dataset.textureMs=String(data.elapsedMs);slot.key=null;inFlight.delete(data.key);textures.delete(data.key);textures.set(data.key,data.artwork);
+      while(textures.size>512)textures.delete(textures.keys().next().value);prepare();if(motion.matches&&!document.hidden&&room.matches)draw();};
+  }
   const scene = document.createElement('div');
   scene.className = 'margin-garden';
+  scene.dataset.renderer = 'webgl2';
   scene.setAttribute('aria-hidden', 'true');
-  canvas.className = 'garden-canopy';
-  scene.append(canvas);
+  canvas.className = rightCanvas.className = 'garden-canopy';
+  scene.append(canvas,rightCanvas);
   document.body.append(scene);
 
   const room = matchMedia('(min-width: 760px)');
@@ -238,7 +279,7 @@ function mountGarden() {
   const pointer = { x:-1000, y:-1000, vx:0, vy:0, at:0, active:false };
   const cellW = 8.5, cellH = 9.5;
   const glyphs = '.,:;=+x%#';
-  let items = [], width = 0, height = 0, gutter = 0, raf = 0, last = 0, painted = 0, time = 0;
+  let items = [], width = 0, height = 0, gutter = 0, raf = 0, last = 0, time = 0;
   let activeBands = '', offset = window.scrollY;
 
   function syncWorld(force = false) {
@@ -264,24 +305,28 @@ function mountGarden() {
       }
       items = next.sort((a,b) => (a.kind === 'leaf' ? 0 : 1)-(b.kind === 'leaf' ? 0 : 1) || a.worldY-b.worldY);
       activeBands = bands;
+      // Prepare unchanged, per-coordinate artwork ahead of either scroll direction.
+      const jobs=[...items];
+      for(let index=Math.max(0,first-4);index<=lastBand+4;index++)if(index<first||index>lastBand)for(const side of ['left','right'])for(const traits of gardenPatch(side,index).members){
+        const leaf=traits.kind==='leaf';jobs.push({...traits,radius:Math.min(leaf?172:78,span*(leaf?.65:.34))*traits.scale,worldY:origin+index*PATCH_HEIGHT+traits.y});
+      }
+      pending=jobs.filter(item=>!textures.has(textureKey(item))&&!inFlight.has(textureKey(item)))
+        .sort((a,b)=>Math.abs(a.worldY-offset-height/2)-Math.abs(b.worldY-offset-height/2));prepare();
     }
     for(const item of items) item.y = item.worldY-offset;
   }
 
   function textureFor(item) {
-    return textures.get(item.id,item);
+    return textures.get(textureKey(item));
   }
 
   function layout() {
-    ({ width, height } = canvas.getBoundingClientRect());
+    if(disposed)return;
+    ({ width, height } = scene.getBoundingClientRect());
     gutter = Math.max(0, (width - 480) / 2 - 26);
     syncWorld(true);
-    const dpr = Math.min(devicePixelRatio || 1, 2);
-    canvas.width = Math.round(width * dpr);
-    canvas.height = Math.round(height * dpr);
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.font = '7.5px ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace';
-    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    const dpr = Math.min(runtime.devicePixelRatio || 1, 2);
+    painter.resize(width,height,dpr);
   }
 
   function step(dt) {
@@ -305,10 +350,8 @@ function mountGarden() {
   }
 
   function draw() {
-    ctx.clearRect(0, 0, width, height);
-    ctx.save();
-    // Even a fast pointer flick cannot send the decoration into the feed.
-    ctx.beginPath(); ctx.rect(0, 0, gutter, height); ctx.rect(width - gutter, 0, gutter, height); ctx.clip();
+    painter.begin(gutter);
+    let visiblePlants=0,readyPlants=0;
     // Pedicels emerge from behind the canopy. Their tips follow the moving
     // flowers, while the roots continue out of frame rather than forming an
     // upright plant silhouette.
@@ -329,16 +372,14 @@ function mountGarden() {
         const key = `${col},${row}`;
         if (cells.has(key)) continue;
         cells.add(key);
-        ctx.fillStyle = GARDEN_PROFILES[item.profile].leaves[t > .75 ? 1 : 2];
-        ctx.fillRect(col * cellW, row * cellH, cellW - .65, cellH - .65);
-        ctx.fillStyle = 'rgba(24, 45, 31, .42)';
-        ctx.fillText(side === 1 ? '/' : String.fromCharCode(92), (col + .5) * cellW, (row + .5) * cellH);
+        const colour=GARDEN_PROFILES[item.profile].leaves[t>.75?1:2];
+        painter.cell(col*cellW,row*cellH,parseInt(colour.slice(1,3),16),parseInt(colour.slice(3,5),16),parseInt(colour.slice(5,7),16),1,side===1?9:10,.42,2);
       }
     }
     for (const item of items) {
       if(item.y+item.radius*1.3<0 || item.y-item.radius*1.3>height)continue;
-      const artwork=textureFor(item);
-      if(!artwork)continue;
+      visiblePlants++;const artwork=textureFor(item);
+      if(!artwork)continue;readyPlants++;
       const desired = 384 / (156 / item.radius * cellW * .7);
       const texture = artwork.levels.find(level => level.size >= desired) || artwork.levels.at(-1);
       const x = item.x + item.dx, y = item.y + item.dy;
@@ -350,10 +391,12 @@ function mountGarden() {
       const y1 = Math.min(Math.ceil(height / cellH), Math.ceil((y + reach) / cellH));
       const scale = texture.radius / item.radius;
       for (let row = y0; row < y1; row++) {
+        const ry=(row+.5)*cellH-y;
+        const flex=motion.matches?0:Math.sin(ry/item.radius*2+time*.8+item.phase)*1.2;
         for (let col = x0; col < x1; col++) {
+          if(col*cellW>=gutter && (col+1)*cellW<=width-gutter)continue;
           const px = (col + .5) * cellW, py = (row + .5) * cellH;
-          const rx = px - x, ry = py - y;
-          const flex = motion.matches ? 0 : Math.sin(ry / item.radius * 2 + time * .8 + item.phase) * 1.2;
+          const rx = px - x;
           const u = Math.floor((rx * cos + ry * sin + flex) * scale + texture.size / 2);
           const v = Math.floor((-rx * sin + ry * cos) * scale + texture.size / 2);
           if (u < 0 || v < 0 || u >= texture.size || v >= texture.size) continue;
@@ -367,27 +410,27 @@ function mountGarden() {
           // Interiors are opaque. Only the silhouette's antialiasing and
           // cast shadow blend; an overlapping leaf cannot show through.
           const opacity = alpha > .95 ? 1 : alpha;
-          ctx.fillStyle = `rgba(${r},${g},${b},${opacity})`;
-          ctx.fillRect(col * cellW, row * cellH, cellW - .65, cellH - .65);
           const luminance = (r * .2126 + g * .7152 + b * .0722) / 255;
           const grain = ((col * 13 + row * 7) % 19) / 19;
-          const glyph = glyphs[Math.floor(clamp(luminance * .67 + grain * .3, 0, .99) * glyphs.length)];
-          ctx.fillStyle = leaf ? `rgba(24,52,42,${alpha * .47})` : `rgba(91,43,22,${alpha * .56})`;
-          ctx.fillText(glyph, px - .1, py);
+          const glyph = Math.floor(clamp(luminance * .67 + grain * .3, 0, .99) * glyphs.length);
+          painter.cell(col*cellW,row*cellH,r,g,b,opacity,glyph,alpha*(leaf?.47:.56),leaf?0:1);
         }
       }
     }
-    ctx.restore();
+    const cells=painter.flush();
+    if(profileMetrics){scene.dataset.cells=String(cells);scene.dataset.plants=String(visiblePlants);scene.dataset.ready=String(readyPlants);}
   }
 
   function frame(now) {
+    if(disposed)return;
     const dt = Math.min((now - last) / 1000, .04);
     last = now; time += dt;
     syncWorld(); step(dt);
-    if (now - painted >= 1000 / 30) { draw(); painted = now; }
+    draw();
     raf = requestAnimationFrame(frame);
   }
   function update() {
+    if(disposed)return;
     cancelAnimationFrame(raf);
     raf = 0;
     if (!room.matches || document.hidden) return;
@@ -399,8 +442,8 @@ function mountGarden() {
     if (!motion.matches) { last = performance.now(); raf = requestAnimationFrame(frame); }
   }
   window.addEventListener('scroll',() => {
-    if(!room.matches || document.hidden || !motion.matches || raf)return;
-    raf=requestAnimationFrame(()=>{raf=0;syncWorld();draw();});
+    if(disposed || !room.matches || document.hidden || !motion.matches || raf)return;
+    raf=requestAnimationFrame(()=>{raf=0;if(disposed)return;syncWorld();draw();});
   },{passive:true});
   window.addEventListener('pointermove', event => {
     if (event.pointerType === 'touch' || motion.matches || !room.matches) return;
@@ -416,8 +459,10 @@ function mountGarden() {
   window.addEventListener('pagehide', () => {cancelAnimationFrame(raf);raf=0;});
   window.addEventListener('pageshow', update);
   [room, motion].forEach(query => query.addEventListener('change', () => { release(); update(); }));
-  new ResizeObserver(() => { layout(); update(); }).observe(canvas);
+  const observer=new ResizeObserver(() => {layout();update();});observer.observe(scene);
   layout(); update();
 }
 
-if (typeof document !== 'undefined') mountGarden();
+if(typeof document!=='undefined'){
+  if(document.documentElement.hasAttribute('data-garden-direct')||!mountGardenOffThread(()=>mountGarden()))mountGarden();
+}

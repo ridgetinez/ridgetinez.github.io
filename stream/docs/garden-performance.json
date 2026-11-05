@@ -1,0 +1,1316 @@
+{
+  "date": "2026-11-05",
+  "implementation": "Original per-leaf animation, instanced GPU cells, bounded worker texture prefetch",
+  "browser": "Codex in-app Chromium 156 on macOS; reference and preview animation tabs closed during timing",
+  "method": "3 repeats each of fresh-forward, reversal and large jumps; 1800ms per run; rAF-driven scrollTo and pointer movement; missed frames estimated at 60Hz, not compositor telemetry",
+  "viewport": {
+    "width": 1280,
+    "height": 720,
+    "dpr": 2
+  },
+  "columns": [
+    "scenario",
+    "repeat",
+    "p95_frame_ms",
+    "max_frame_ms",
+    "p95_callback_ms",
+    "estimated_missed_frames"
+  ],
+  "deployed_reference": [
+    [
+      "fresh-forward",
+      1,
+      481.4,
+      481.4,
+      456.8,
+      105
+    ],
+    [
+      "reversal",
+      1,
+      472,
+      472,
+      449.2,
+      117
+    ],
+    [
+      "large-jumps",
+      1,
+      410.9,
+      410.9,
+      390.1,
+      106
+    ],
+    [
+      "fresh-forward",
+      2,
+      462.1,
+      462.1,
+      444.5,
+      105
+    ],
+    [
+      "reversal",
+      2,
+      495.2,
+      495.2,
+      476.8,
+      122
+    ],
+    [
+      "large-jumps",
+      2,
+      412.1,
+      412.1,
+      398.3,
+      101
+    ],
+    [
+      "fresh-forward",
+      3,
+      500.9,
+      500.9,
+      487.6,
+      113
+    ],
+    [
+      "reversal",
+      3,
+      453,
+      453,
+      439.9,
+      111
+    ],
+    [
+      "large-jumps",
+      3,
+      549.9,
+      549.9,
+      537.3,
+      104
+    ]
+  ],
+  "gpu_renderer": [
+    [
+      "fresh-forward",
+      1,
+      18.5,
+      102,
+      5.2,
+      8
+    ],
+    [
+      "reversal",
+      1,
+      17.9,
+      32.9,
+      2.8,
+      1
+    ],
+    [
+      "large-jumps",
+      1,
+      18.4,
+      18.6,
+      2.5,
+      0
+    ],
+    [
+      "fresh-forward",
+      2,
+      17.9,
+      18.6,
+      3.1,
+      0
+    ],
+    [
+      "reversal",
+      2,
+      18.1,
+      18.6,
+      3.1,
+      0
+    ],
+    [
+      "large-jumps",
+      2,
+      18,
+      18.6,
+      2.9,
+      0
+    ],
+    [
+      "fresh-forward",
+      3,
+      18.3,
+      18.7,
+      3.1,
+      0
+    ],
+    [
+      "reversal",
+      3,
+      18.4,
+      18.6,
+      3,
+      0
+    ],
+    [
+      "large-jumps",
+      3,
+      18.5,
+      18.7,
+      2.8,
+      0
+    ]
+  ],
+  "visible_foliage_at_sample": [
+    [
+      22,
+      22
+    ],
+    [
+      27,
+      27
+    ],
+    [
+      26,
+      26
+    ],
+    [
+      27,
+      27
+    ],
+    [
+      24,
+      24
+    ],
+    [
+      23,
+      23
+    ],
+    [
+      27,
+      27
+    ],
+    [
+      24,
+      24
+    ],
+    [
+      24,
+      24
+    ]
+  ],
+  "gates": {
+    "p95_frame_budget_ms": 25,
+    "p95_callback_budget_ms": 8,
+    "animated_gpu": true,
+    "all_visible_plants_ready": true,
+    "main_thread_pixel_readbacks": 0,
+    "main_thread_canvas2d_clears": 0
+  },
+  "visual_comparison": {
+    "viewport": {
+      "width": 1280,
+      "height": 720,
+      "dpr": 2
+    },
+    "clock_step_ms": 40,
+    "columns": [
+      "pose",
+      "mean_absolute_RGBA_error_0_to_255",
+      "percent_pixels_with_all_channels_within_12"
+    ],
+    "results": [
+      [
+        "initial",
+        1.761,
+        96.17
+      ],
+      [
+        "wind after 2.4 seconds",
+        1.764,
+        96.04
+      ],
+      [
+        "pointer displacement",
+        1.764,
+        96.12
+      ],
+      [
+        "spring settling",
+        1.784,
+        96.02
+      ],
+      [
+        "after scrolling",
+        1.717,
+        96.38
+      ]
+    ]
+  },
+  "limitations": "Aggressive synthetic scroll workloads, one local browser/environment; cold startup spikes retained; mean pixel error includes alpha. Geometry and spring equations match the deployed reference; raster antialiasing is not byte-identical. Canvas2D fallback is not covered by the GPU timing claims.",
+  "wide_check": {
+    "viewport": {
+      "width": 1920,
+      "height": 1080,
+      "dpr": 1
+    },
+    "runs": [
+      [
+        "fresh-forward",
+        1,
+        33.4,
+        150.4,
+        10.7,
+        16
+      ],
+      [
+        "reversal",
+        1,
+        18.4,
+        20,
+        3.8,
+        0
+      ],
+      [
+        "large-jumps",
+        1,
+        18.3,
+        24.1,
+        4.5,
+        0
+      ],
+      [
+        "fresh-forward",
+        2,
+        18.8,
+        25,
+        4.1,
+        1
+      ],
+      [
+        "reversal",
+        2,
+        18.4,
+        18.6,
+        3.8,
+        0
+      ],
+      [
+        "large-jumps",
+        2,
+        18.2,
+        20,
+        3.6,
+        0
+      ],
+      [
+        "fresh-forward",
+        3,
+        18.6,
+        19.8,
+        4.2,
+        0
+      ],
+      [
+        "reversal",
+        3,
+        18.5,
+        20.9,
+        4.1,
+        0
+      ],
+      [
+        "large-jumps",
+        3,
+        19.8,
+        23.3,
+        4.5,
+        0
+      ]
+    ],
+    "visible_foliage_at_sample": [
+      [
+        31,
+        31
+      ],
+      [
+        36,
+        36
+      ],
+      [
+        33,
+        33
+      ],
+      [
+        33,
+        33
+      ],
+      [
+        33,
+        33
+      ],
+      [
+        37,
+        37
+      ],
+      [
+        34,
+        34
+      ],
+      [
+        28,
+        28
+      ],
+      [
+        28,
+        28
+      ]
+    ],
+    "cold_first_run_passed_frame_and_callback_budgets": false,
+    "remaining_8_runs_passed": true
+  },
+  "native_wheel": {
+    "location": "left margin",
+    "duration_ms": 6012.7,
+    "p95_frame_ms": 19.7,
+    "max_frame_ms": 68.6,
+    "estimated_missed_frames": 13,
+    "p95_callback_ms": 3.6,
+    "ready_plants": 23,
+    "visible_plants": 23,
+    "renderer": "webgl2",
+    "main_thread_pixel_readbacks": 0
+  },
+  "validation": {
+    "tests_passed": 26,
+    "syntax": "passed",
+    "static_build": "passed"
+  },
+  "mobile_check": {
+    "viewport_width": 390,
+    "viewport_height": 844,
+    "document_scroll_width": 390,
+    "garden_display": "none"
+  },
+  "inputLatencyWorkerFollowup": {
+    "workerScroll": {
+      "variant": "/fixed.html",
+      "viewport": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 2
+      },
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+      "method": "rAF-driven scrollTo; 3 repeats per scenario, 1800ms each; pointer over alternating margins. Frame intervals include test overhead. Missed frames estimated against 60Hz, not compositor telemetry.",
+      "runs": [
+        {
+          "mode": "fresh-forward",
+          "repeat": 1,
+          "side": "left",
+          "frames": 112,
+          "elapsedMs": 1809.6,
+          "frameP50": 16.3,
+          "frameP95": 18.2,
+          "frameP99": 26.4,
+          "maxFrame": 49.1,
+          "framesOver25ms": 2,
+          "estimatedMissed60HzFrames": 3,
+          "rendererP95": 0,
+          "rendererMax": 0,
+          "workerRendererP95": 2.5,
+          "workerRendererMax": 3.1,
+          "workerFrames": 113,
+          "thread": "worker",
+          "longTasks": 0,
+          "longTaskMs": 0,
+          "canvasClears": 0,
+          "clearMegapixels": 0,
+          "readbacks": 0,
+          "renderer": "webgl2",
+          "cells": 9518,
+          "visiblePlants": 27,
+          "readyPlants": 27
+        },
+        {
+          "mode": "reversal",
+          "repeat": 1,
+          "side": "left",
+          "frames": 109,
+          "elapsedMs": 1809.8,
+          "frameP50": 16.7,
+          "frameP95": 17.3,
+          "frameP99": 17.5,
+          "maxFrame": 17.6,
+          "framesOver25ms": 0,
+          "estimatedMissed60HzFrames": 0,
+          "rendererP95": 0,
+          "rendererMax": 0,
+          "workerRendererP95": 2.1,
+          "workerRendererMax": 2.9,
+          "workerFrames": 110,
+          "thread": "worker",
+          "longTasks": 0,
+          "longTaskMs": 0,
+          "canvasClears": 0,
+          "clearMegapixels": 0,
+          "readbacks": 0,
+          "renderer": "webgl2",
+          "cells": 10236,
+          "visiblePlants": 26,
+          "readyPlants": 26
+        },
+        {
+          "mode": "large-jumps",
+          "repeat": 1,
+          "side": "left",
+          "frames": 114,
+          "elapsedMs": 1808.5,
+          "frameP50": 16.5,
+          "frameP95": 17.6,
+          "frameP99": 17.8,
+          "maxFrame": 20.3,
+          "framesOver25ms": 0,
+          "estimatedMissed60HzFrames": 0,
+          "rendererP95": 0,
+          "rendererMax": 0,
+          "workerRendererP95": 2,
+          "workerRendererMax": 2.3,
+          "workerFrames": 115,
+          "thread": "worker",
+          "longTasks": 0,
+          "longTaskMs": 0,
+          "canvasClears": 0,
+          "clearMegapixels": 0,
+          "readbacks": 0,
+          "renderer": "webgl2",
+          "cells": 9398,
+          "visiblePlants": 26,
+          "readyPlants": 26
+        },
+        {
+          "mode": "fresh-forward",
+          "repeat": 2,
+          "side": "right",
+          "frames": 109,
+          "elapsedMs": 1803.3,
+          "frameP50": 16.7,
+          "frameP95": 17.8,
+          "frameP99": 19.6,
+          "maxFrame": 25.7,
+          "framesOver25ms": 1,
+          "estimatedMissed60HzFrames": 1,
+          "rendererP95": 0,
+          "rendererMax": 0,
+          "workerRendererP95": 2.2,
+          "workerRendererMax": 2.3,
+          "workerFrames": 110,
+          "thread": "worker",
+          "longTasks": 0,
+          "longTaskMs": 0,
+          "canvasClears": 0,
+          "clearMegapixels": 0,
+          "readbacks": 0,
+          "renderer": "webgl2",
+          "cells": 9626,
+          "visiblePlants": 25,
+          "readyPlants": 25
+        },
+        {
+          "mode": "reversal",
+          "repeat": 2,
+          "side": "right",
+          "frames": 109,
+          "elapsedMs": 1804.8,
+          "frameP50": 16.7,
+          "frameP95": 17.7,
+          "frameP99": 18.8,
+          "maxFrame": 25.2,
+          "framesOver25ms": 1,
+          "estimatedMissed60HzFrames": 1,
+          "rendererP95": 0,
+          "rendererMax": 0,
+          "workerRendererP95": 2.1,
+          "workerRendererMax": 2.3,
+          "workerFrames": 110,
+          "thread": "worker",
+          "longTasks": 0,
+          "longTaskMs": 0,
+          "canvasClears": 0,
+          "clearMegapixels": 0,
+          "readbacks": 0,
+          "renderer": "webgl2",
+          "cells": 8192,
+          "visiblePlants": 21,
+          "readyPlants": 21
+        },
+        {
+          "mode": "large-jumps",
+          "repeat": 2,
+          "side": "right",
+          "frames": 111,
+          "elapsedMs": 1806.8,
+          "frameP50": 16.6,
+          "frameP95": 18.3,
+          "frameP99": 24.5,
+          "maxFrame": 25,
+          "framesOver25ms": 0,
+          "estimatedMissed60HzFrames": 1,
+          "rendererP95": 0,
+          "rendererMax": 0,
+          "workerRendererP95": 2,
+          "workerRendererMax": 2.4,
+          "workerFrames": 113,
+          "thread": "worker",
+          "longTasks": 0,
+          "longTaskMs": 0,
+          "canvasClears": 0,
+          "clearMegapixels": 0,
+          "readbacks": 0,
+          "renderer": "webgl2",
+          "cells": 10170,
+          "visiblePlants": 23,
+          "readyPlants": 23
+        },
+        {
+          "mode": "fresh-forward",
+          "repeat": 3,
+          "side": "left",
+          "frames": 108,
+          "elapsedMs": 1801.7,
+          "frameP50": 16.7,
+          "frameP95": 17.6,
+          "frameP99": 17.6,
+          "maxFrame": 17.6,
+          "framesOver25ms": 0,
+          "estimatedMissed60HzFrames": 0,
+          "rendererP95": 0,
+          "rendererMax": 0,
+          "workerRendererP95": 2.4,
+          "workerRendererMax": 3.2,
+          "workerFrames": 109,
+          "thread": "worker",
+          "longTasks": 0,
+          "longTaskMs": 0,
+          "canvasClears": 0,
+          "clearMegapixels": 0,
+          "readbacks": 0,
+          "renderer": "webgl2",
+          "cells": 10405,
+          "visiblePlants": 30,
+          "readyPlants": 30
+        },
+        {
+          "mode": "reversal",
+          "repeat": 3,
+          "side": "left",
+          "frames": 112,
+          "elapsedMs": 1807.9,
+          "frameP50": 16.3,
+          "frameP95": 17.6,
+          "frameP99": 17.7,
+          "maxFrame": 17.8,
+          "framesOver25ms": 0,
+          "estimatedMissed60HzFrames": 0,
+          "rendererP95": 0,
+          "rendererMax": 0,
+          "workerRendererP95": 2.6,
+          "workerRendererMax": 3.4,
+          "workerFrames": 113,
+          "thread": "worker",
+          "longTasks": 0,
+          "longTaskMs": 0,
+          "canvasClears": 0,
+          "clearMegapixels": 0,
+          "readbacks": 0,
+          "renderer": "webgl2",
+          "cells": 7703,
+          "visiblePlants": 22,
+          "readyPlants": 22
+        },
+        {
+          "mode": "large-jumps",
+          "repeat": 3,
+          "side": "left",
+          "frames": 110,
+          "elapsedMs": 1808.2,
+          "frameP50": 16.6,
+          "frameP95": 17.3,
+          "frameP99": 17.6,
+          "maxFrame": 17.6,
+          "framesOver25ms": 0,
+          "estimatedMissed60HzFrames": 0,
+          "rendererP95": 0,
+          "rendererMax": 0,
+          "workerRendererP95": 2,
+          "workerRendererMax": 3.1,
+          "workerFrames": 111,
+          "thread": "worker",
+          "longTasks": 0,
+          "longTaskMs": 0,
+          "canvasClears": 0,
+          "clearMegapixels": 0,
+          "readbacks": 0,
+          "renderer": "webgl2",
+          "cells": 10414,
+          "visiblePlants": 24,
+          "readyPlants": 24
+        }
+      ],
+      "gates": {
+        "p95Within25ms": true,
+        "rendererP95Within8ms": true,
+        "noMainThreadReadbacks": true,
+        "noCanvasClears": true,
+        "animatedGPU": true,
+        "completeFoliage": true
+      }
+    },
+    "parityFinal": {
+      "clockStepMs": 40,
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "results": [
+        {
+          "pose": "initial",
+          "plantPixels": 744432,
+          "meanChannelError": 1.761,
+          "percentWithin12": 96.17,
+          "renderer": "webgl2"
+        },
+        {
+          "pose": "wind after 2.4 seconds",
+          "plantPixels": 744727,
+          "meanChannelError": 1.764,
+          "percentWithin12": 96.04,
+          "renderer": "webgl2"
+        },
+        {
+          "pose": "pointer displacement",
+          "plantPixels": 745259,
+          "meanChannelError": 1.764,
+          "percentWithin12": 96.12,
+          "renderer": "webgl2"
+        },
+        {
+          "pose": "spring settling",
+          "plantPixels": 752787,
+          "meanChannelError": 1.784,
+          "percentWithin12": 96.02,
+          "renderer": "webgl2"
+        },
+        {
+          "pose": "after scrolling",
+          "plantPixels": 1097450,
+          "meanChannelError": 1.717,
+          "percentWithin12": 96.38,
+          "renderer": "webgl2"
+        }
+      ]
+    },
+    "workerLatency1": {
+      "url": "/latency-garden.html",
+      "renderer": "webgl2",
+      "viewport": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 2
+      },
+      "wheelEvents": 3,
+      "burstStarts": 1,
+      "trusted": true,
+      "all": {
+        "handlerDelayMs": {
+          "count": 3,
+          "p50": 12.5,
+          "p95": 28.4,
+          "max": 28.4
+        },
+        "nextAnimationFrameMs": {
+          "count": 3,
+          "p50": 12.9,
+          "p95": 28.9,
+          "max": 28.9
+        },
+        "scrollEventMs": {
+          "count": 3,
+          "p50": 12.9,
+          "p95": 45.5,
+          "max": 45.5
+        },
+        "scrollObservedAtFrameMs": {
+          "count": 3,
+          "p50": 12.9,
+          "p95": 45.6,
+          "max": 45.6
+        }
+      },
+      "starts": {
+        "handlerDelayMs": {
+          "count": 1,
+          "p50": 28.4,
+          "p95": 28.4,
+          "max": 28.4
+        },
+        "nextAnimationFrameMs": {
+          "count": 1,
+          "p50": 28.9,
+          "p95": 28.9,
+          "max": 28.9
+        },
+        "scrollEventMs": {
+          "count": 1,
+          "p50": 45.5,
+          "p95": 45.5,
+          "max": 45.5
+        },
+        "scrollObservedAtFrameMs": {
+          "count": 1,
+          "p50": 45.6,
+          "p95": 45.6,
+          "max": 45.6
+        }
+      },
+      "samples": [
+        {
+          "trusted": true,
+          "burstStart": true,
+          "x": 100,
+          "y": 450,
+          "deltaY": 720,
+          "handlerDelayMs": 28.4,
+          "nextAnimationFrameMs": 28.9,
+          "scrollEventMs": 45.5,
+          "scrollObservedAtFrameMs": 45.6
+        },
+        {
+          "trusted": true,
+          "burstStart": false,
+          "x": 640,
+          "y": 450,
+          "deltaY": 720,
+          "handlerDelayMs": 12.5,
+          "scrollEventMs": 12.9,
+          "nextAnimationFrameMs": 12.9,
+          "scrollObservedAtFrameMs": 12.9
+        },
+        {
+          "trusted": true,
+          "burstStart": false,
+          "x": 1180,
+          "y": 450,
+          "deltaY": -720,
+          "handlerDelayMs": 8,
+          "scrollEventMs": 8.4,
+          "nextAnimationFrameMs": 8.5,
+          "scrollObservedAtFrameMs": 8.5
+        }
+      ],
+      "limitations": "Event timestamp to handler/scroll/rAF proxies; excludes hardware-to-browser delivery and does not measure compositor presentation or photons."
+    },
+    "workerLatency2": {
+      "url": "/latency-garden.html",
+      "renderer": "webgl2",
+      "viewport": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 2
+      },
+      "wheelEvents": 9,
+      "burstStarts": 1,
+      "trusted": true,
+      "all": {
+        "handlerDelayMs": {
+          "count": 9,
+          "p50": 23.1,
+          "p95": 39.9,
+          "max": 39.9
+        },
+        "nextAnimationFrameMs": {
+          "count": 9,
+          "p50": 23.4,
+          "p95": 40.2,
+          "max": 40.2
+        },
+        "scrollEventMs": {
+          "count": 9,
+          "p50": 23.3,
+          "p95": 51.5,
+          "max": 51.5
+        },
+        "scrollObservedAtFrameMs": {
+          "count": 9,
+          "p50": 23.4,
+          "p95": 51.6,
+          "max": 51.6
+        }
+      },
+      "starts": {
+        "handlerDelayMs": {
+          "count": 1,
+          "p50": 30.6,
+          "p95": 30.6,
+          "max": 30.6
+        },
+        "nextAnimationFrameMs": {
+          "count": 1,
+          "p50": 30.8,
+          "p95": 30.8,
+          "max": 30.8
+        },
+        "scrollEventMs": {
+          "count": 1,
+          "p50": 50.8,
+          "p95": 50.8,
+          "max": 50.8
+        },
+        "scrollObservedAtFrameMs": {
+          "count": 1,
+          "p50": 50.9,
+          "p95": 50.9,
+          "max": 50.9
+        }
+      },
+      "samples": [
+        {
+          "trusted": true,
+          "burstStart": true,
+          "x": 100,
+          "y": 450,
+          "deltaY": 720,
+          "handlerDelayMs": 30.6,
+          "nextAnimationFrameMs": 30.8,
+          "scrollEventMs": 50.8,
+          "scrollObservedAtFrameMs": 50.9
+        },
+        {
+          "trusted": true,
+          "burstStart": false,
+          "x": 640,
+          "y": 450,
+          "deltaY": 720,
+          "handlerDelayMs": 18.1,
+          "scrollEventMs": 18.5,
+          "nextAnimationFrameMs": 18.5,
+          "scrollObservedAtFrameMs": 18.5
+        },
+        {
+          "trusted": true,
+          "burstStart": false,
+          "x": 1180,
+          "y": 450,
+          "deltaY": -720,
+          "handlerDelayMs": 9.8,
+          "scrollEventMs": 10,
+          "nextAnimationFrameMs": 10.1,
+          "scrollObservedAtFrameMs": 10.1
+        },
+        {
+          "trusted": true,
+          "burstStart": false,
+          "x": 100,
+          "y": 450,
+          "deltaY": -720,
+          "handlerDelayMs": 21,
+          "scrollEventMs": 21.2,
+          "nextAnimationFrameMs": 21.3,
+          "scrollObservedAtFrameMs": 21.3
+        },
+        {
+          "trusted": true,
+          "burstStart": false,
+          "x": 640,
+          "y": 450,
+          "deltaY": 720,
+          "handlerDelayMs": 27.7,
+          "scrollEventMs": 28.1,
+          "nextAnimationFrameMs": 28.1,
+          "scrollObservedAtFrameMs": 28.1
+        },
+        {
+          "trusted": true,
+          "burstStart": false,
+          "x": 1180,
+          "y": 450,
+          "deltaY": 720,
+          "handlerDelayMs": 39.9,
+          "scrollEventMs": 40.1,
+          "nextAnimationFrameMs": 40.2,
+          "scrollObservedAtFrameMs": 40.2
+        },
+        {
+          "trusted": true,
+          "burstStart": false,
+          "x": 100,
+          "y": 450,
+          "deltaY": -720,
+          "handlerDelayMs": 23.1,
+          "scrollEventMs": 23.3,
+          "nextAnimationFrameMs": 23.4,
+          "scrollObservedAtFrameMs": 23.4
+        },
+        {
+          "trusted": true,
+          "burstStart": false,
+          "x": 640,
+          "y": 450,
+          "deltaY": -720,
+          "handlerDelayMs": 31,
+          "nextAnimationFrameMs": 31.1,
+          "scrollEventMs": 51.5,
+          "scrollObservedAtFrameMs": 51.6
+        },
+        {
+          "trusted": true,
+          "burstStart": false,
+          "x": 1180,
+          "y": 450,
+          "deltaY": 720,
+          "handlerDelayMs": 17.6,
+          "scrollEventMs": 17.7,
+          "nextAnimationFrameMs": 17.8,
+          "scrollObservedAtFrameMs": 17.8
+        }
+      ],
+      "limitations": "Event timestamp to handler/scroll/rAF proxies; excludes hardware-to-browser delivery and does not measure compositor presentation or photons."
+    },
+    "directLatency": {
+      "url": "/latency-direct.html",
+      "renderer": "webgl2",
+      "thread": "main",
+      "viewport": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 2
+      },
+      "wheelEvents": 9,
+      "burstStarts": 1,
+      "trusted": true,
+      "all": {
+        "handlerDelayMs": {
+          "count": 9,
+          "p50": 45.1,
+          "p95": 47.8,
+          "max": 47.8
+        },
+        "nextAnimationFrameMs": {
+          "count": 9,
+          "p50": 48.6,
+          "p95": 52.3,
+          "max": 52.3
+        },
+        "scrollEventMs": {
+          "count": 9,
+          "p50": 47.1,
+          "p95": 49.5,
+          "max": 49.5
+        },
+        "scrollObservedAtFrameMs": {
+          "count": 9,
+          "p50": 48.7,
+          "p95": 52.3,
+          "max": 52.3
+        }
+      },
+      "starts": {
+        "handlerDelayMs": {
+          "count": 1,
+          "p50": 47.8,
+          "p95": 47.8,
+          "max": 47.8
+        },
+        "nextAnimationFrameMs": {
+          "count": 1,
+          "p50": 52.3,
+          "p95": 52.3,
+          "max": 52.3
+        },
+        "scrollEventMs": {
+          "count": 1,
+          "p50": 49.5,
+          "p95": 49.5,
+          "max": 49.5
+        },
+        "scrollObservedAtFrameMs": {
+          "count": 1,
+          "p50": 52.3,
+          "p95": 52.3,
+          "max": 52.3
+        }
+      },
+      "samples": [
+        {
+          "trusted": true,
+          "burstStart": true,
+          "x": 100,
+          "y": 450,
+          "deltaY": 720,
+          "handlerDelayMs": 47.8,
+          "scrollEventMs": 49.5,
+          "nextAnimationFrameMs": 52.3,
+          "scrollObservedAtFrameMs": 52.3
+        },
+        {
+          "trusted": true,
+          "burstStart": false,
+          "x": 640,
+          "y": 450,
+          "deltaY": 720,
+          "handlerDelayMs": 47.7,
+          "scrollEventMs": 48,
+          "nextAnimationFrameMs": 50.4,
+          "scrollObservedAtFrameMs": 50.5
+        },
+        {
+          "trusted": true,
+          "burstStart": false,
+          "x": 1180,
+          "y": 450,
+          "deltaY": -720,
+          "handlerDelayMs": 37.2,
+          "scrollEventMs": 42.3,
+          "nextAnimationFrameMs": 44.7,
+          "scrollObservedAtFrameMs": 44.7
+        },
+        {
+          "trusted": true,
+          "burstStart": false,
+          "x": 100,
+          "y": 450,
+          "deltaY": -720,
+          "handlerDelayMs": 33.7,
+          "scrollEventMs": 34,
+          "nextAnimationFrameMs": 34.9,
+          "scrollObservedAtFrameMs": 34.9
+        },
+        {
+          "trusted": true,
+          "burstStart": false,
+          "x": 640,
+          "y": 450,
+          "deltaY": 720,
+          "handlerDelayMs": 41.8,
+          "scrollEventMs": 45.6,
+          "nextAnimationFrameMs": 47.5,
+          "scrollObservedAtFrameMs": 47.5
+        },
+        {
+          "trusted": true,
+          "burstStart": false,
+          "x": 1180,
+          "y": 450,
+          "deltaY": 720,
+          "handlerDelayMs": 45.1,
+          "scrollEventMs": 47.5,
+          "nextAnimationFrameMs": 49.5,
+          "scrollObservedAtFrameMs": 49.5
+        },
+        {
+          "trusted": true,
+          "burstStart": false,
+          "x": 100,
+          "y": 450,
+          "deltaY": -720,
+          "handlerDelayMs": 42.1,
+          "scrollEventMs": 45.7,
+          "nextAnimationFrameMs": 47.6,
+          "scrollObservedAtFrameMs": 47.6
+        },
+        {
+          "trusted": true,
+          "burstStart": false,
+          "x": 640,
+          "y": 450,
+          "deltaY": -720,
+          "handlerDelayMs": 45.1,
+          "scrollEventMs": 47.5,
+          "nextAnimationFrameMs": 48.6,
+          "scrollObservedAtFrameMs": 48.7
+        },
+        {
+          "trusted": true,
+          "burstStart": false,
+          "x": 1180,
+          "y": 450,
+          "deltaY": 720,
+          "handlerDelayMs": 46.9,
+          "scrollEventMs": 47.1,
+          "nextAnimationFrameMs": 49.2,
+          "scrollObservedAtFrameMs": 49.2
+        }
+      ],
+      "limitations": "Event timestamp to handler/scroll/rAF proxies; excludes hardware-to-browser delivery and does not measure compositor presentation or photons."
+    },
+    "workerLatencyFinal": {
+      "url": "/latency-garden.html",
+      "renderer": "webgl2",
+      "thread": "worker",
+      "viewport": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 2
+      },
+      "wheelEvents": 9,
+      "burstStarts": 1,
+      "trusted": true,
+      "all": {
+        "handlerDelayMs": {
+          "count": 9,
+          "p50": 24,
+          "p95": 30.3,
+          "max": 30.3
+        },
+        "nextAnimationFrameMs": {
+          "count": 9,
+          "p50": 25.9,
+          "p95": 30.6,
+          "max": 30.6
+        },
+        "scrollEventMs": {
+          "count": 9,
+          "p50": 25.8,
+          "p95": 30.5,
+          "max": 30.5
+        },
+        "scrollObservedAtFrameMs": {
+          "count": 9,
+          "p50": 25.9,
+          "p95": 30.6,
+          "max": 30.6
+        }
+      },
+      "starts": {
+        "handlerDelayMs": {
+          "count": 1,
+          "p50": 30.3,
+          "p95": 30.3,
+          "max": 30.3
+        },
+        "nextAnimationFrameMs": {
+          "count": 1,
+          "p50": 30.6,
+          "p95": 30.6,
+          "max": 30.6
+        },
+        "scrollEventMs": {
+          "count": 1,
+          "p50": 30.5,
+          "p95": 30.5,
+          "max": 30.5
+        },
+        "scrollObservedAtFrameMs": {
+          "count": 1,
+          "p50": 30.6,
+          "p95": 30.6,
+          "max": 30.6
+        }
+      },
+      "samples": [
+        {
+          "trusted": true,
+          "burstStart": true,
+          "x": 100,
+          "y": 450,
+          "deltaY": 720,
+          "handlerDelayMs": 30.3,
+          "scrollEventMs": 30.5,
+          "nextAnimationFrameMs": 30.6,
+          "scrollObservedAtFrameMs": 30.6
+        },
+        {
+          "trusted": true,
+          "burstStart": false,
+          "x": 640,
+          "y": 450,
+          "deltaY": 720,
+          "handlerDelayMs": 11.9,
+          "scrollEventMs": 12.3,
+          "nextAnimationFrameMs": 12.4,
+          "scrollObservedAtFrameMs": 12.4
+        },
+        {
+          "trusted": true,
+          "burstStart": false,
+          "x": 1180,
+          "y": 450,
+          "deltaY": -720,
+          "handlerDelayMs": 6.6,
+          "scrollEventMs": 6.8,
+          "nextAnimationFrameMs": 6.8,
+          "scrollObservedAtFrameMs": 6.8
+        },
+        {
+          "trusted": true,
+          "burstStart": false,
+          "x": 100,
+          "y": 450,
+          "deltaY": -720,
+          "handlerDelayMs": 24,
+          "scrollEventMs": 26.9,
+          "nextAnimationFrameMs": 27,
+          "scrollObservedAtFrameMs": 27
+        },
+        {
+          "trusted": true,
+          "burstStart": false,
+          "x": 640,
+          "y": 450,
+          "deltaY": 720,
+          "handlerDelayMs": 25,
+          "scrollEventMs": 29.9,
+          "nextAnimationFrameMs": 30,
+          "scrollObservedAtFrameMs": 30
+        },
+        {
+          "trusted": true,
+          "burstStart": false,
+          "x": 1180,
+          "y": 450,
+          "deltaY": 720,
+          "handlerDelayMs": 28.6,
+          "scrollEventMs": 28.7,
+          "nextAnimationFrameMs": 28.9,
+          "scrollObservedAtFrameMs": 28.9
+        },
+        {
+          "trusted": true,
+          "burstStart": false,
+          "x": 100,
+          "y": 450,
+          "deltaY": -720,
+          "handlerDelayMs": 22.2,
+          "scrollEventMs": 25.8,
+          "nextAnimationFrameMs": 25.9,
+          "scrollObservedAtFrameMs": 25.9
+        },
+        {
+          "trusted": true,
+          "burstStart": false,
+          "x": 640,
+          "y": 450,
+          "deltaY": -720,
+          "handlerDelayMs": 24.2,
+          "scrollEventMs": 24.5,
+          "nextAnimationFrameMs": 24.6,
+          "scrollObservedAtFrameMs": 24.6
+        },
+        {
+          "trusted": true,
+          "burstStart": false,
+          "x": 1180,
+          "y": 450,
+          "deltaY": 720,
+          "handlerDelayMs": 22.6,
+          "scrollEventMs": 22.7,
+          "nextAnimationFrameMs": 22.7,
+          "scrollObservedAtFrameMs": 22.7
+        }
+      ],
+      "limitations": "Event timestamp to handler/scroll/rAF proxies; excludes hardware-to-browser delivery and does not measure compositor presentation or photons."
+    }
+  }
+}

@@ -11,7 +11,7 @@
     "dev": "node --env-file-if-exists=.env scripts/write.js",
     "demo": "node scripts/static-demo.js",
     "test": "node --test test/*.test.js",
-    "check": "node --check src/server.js && node --check public/app.js && node --check public/reader.js && node --check public/garden.js && node --check public/mascot.js && node --check src/vault.js && node --check src/static.js && node --check scripts/write.js && node --check src/diagrams.js && node --check scripts/diagram.js",
+    "check": "node --check src/server.js && node --check public/app.js && node --check public/reader.js && node --check public/garden.js && node --check public/garden-gl.js && node --check public/garden-worker.js && node --check public/garden-host.js && node --check public/garden-render-worker.js && node --check public/garden-2d.js && node --check public/mascot.js && node --check src/vault.js && node --check src/static.js && node --check scripts/write.js && node --check src/diagrams.js && node --check scripts/diagram.js",
     "backup": "node --env-file-if-exists=.env scripts/backup.js",
     "preview": "node --env-file-if-exists=.env scripts/preview.js",
     "build": "node --env-file-if-exists=.env scripts/build.js",
