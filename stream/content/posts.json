@@ -2,6 +2,47 @@
   "version": 1,
   "posts": [
     {
+      "id": "20261105-2337",
+      "body": "Soul fulfilling day with vovo, tommy and linda. Also got the hep A, typhoid and cholera vaccines.",
+      "tags": [],
+      "links": [],
+      "created_at": "2026-11-05T12:37:00.000Z",
+      "attachments": []
+    },
+    {
+      "id": "20261105-1308",
+      "body": "4 problems. A truly cooked problem today disguised so simply. The problem is a hexagon with two side lengths 7 and four side lengths 20 is inscribed in a circle. Find the radius. The first part of this is finding out what such a hexagon _could_ look like. There's three cases here, the two 7 side length are adjacent, one away from each other, or opposite. Each of these can be transformed to the other cases (and this is the key thing here) _without_ the circle changing. Put another way, the hexagon transformations preserve the circle. This means that no matter which hexagon, the circumscribed circle's radius will be the same for all of them.\n\n![Two reflections connect all three hexagon arrangements while preserving the circle and its radius](/diagrams/5cff29633387305418a598cfecea6d77c2d0723488ebfd6a1cb91c2289e475cc.svg)\n\nWe choose the hexagon where the shorter side lengths are opposite each other, and look at the isosceles trapezium to find the radius.\n\nLong time coming, but I finally bit the bullet and [re-learnt factorising quadratics where the leading coefficient isn't 1](https://www.khanacademy.org/math/algebra/x2f8bb11595b61c86:quadratics-multiplying-factoring/x2f8bb11595b61c86:factor-quadratics-grouping/a/factoring-quadratics-leading-coefficient-not-1), and there's no factor in any of the other terms. It's simple stuff, but it was biting me when I get to factorising and lose my flow to wolfram alpha.",
+      "tags": [
+        "math",
+        "geometry"
+      ],
+      "links": [],
+      "created_at": "2026-11-05T02:08:00.000Z",
+      "attachments": [],
+      "diagrams": [
+        {
+          "filename": "5cff29633387305418a598cfecea6d77c2d0723488ebfd6a1cb91c2289e475cc.svg",
+          "alt": "Two reflections connect all three hexagon arrangements while preserving the circle and its radius"
+        }
+      ]
+    },
+    {
+      "id": "20261105-1307",
+      "body": "They gave me hope, but alas it's a 3-0. It was foretold.",
+      "tags": [],
+      "links": [],
+      "created_at": "2026-11-05T02:07:00.000Z",
+      "attachments": []
+    },
+    {
+      "id": "20261105-0848",
+      "body": "I predict LYON v GENG 3-2 lyon's way. It has been foretold.",
+      "tags": [],
+      "links": [],
+      "created_at": "2026-11-04T21:48:00.000Z",
+      "attachments": []
+    },
+    {
       "id": "20261104-2255",
       "body": "I had a lovely lunch with Apurva yesterday, and on the menu was pork loin with rosemary jus. It got me thinking that I've never cooked a pork loin roast, despite how much cheaper it is than pork belly (and dare I say healthier?) A random loin roast from Coles, 100C for 2 hours until internal reaches 56C and then 275C until crispy and golden brown and yep. It's delicious. For $11 a kilo, it's an insane deal. Served alongside pinto beans I had bought maybe 4 years ago, dressed with a [salsa verde](https://www.greatbritishchefs.com/recipes/braised-pork-belly-with-cannellini-beans-recipe).",
       "tags": [
