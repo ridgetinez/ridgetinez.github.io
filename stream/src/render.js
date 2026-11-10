@@ -2,6 +2,8 @@ import { escapeHTML as e, renderMarkdown, excerpt } from './markdown.js';
 import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { sitePath, postPath, tagPath } from './urls.js';
+import { dayKey } from './calendar.js';
+import { renderDayHeading } from './day-heading.js';
 
 // Content versions let a normal refresh pick up a new design while assets
 // retain their cache lifetime. Recomputed when the application starts.
@@ -67,9 +69,13 @@ export function renderPage({ posts, tags, store, config, editor = false, csrf = 
   let day = '';
   const dayFormat = new Intl.DateTimeFormat('en-AU', { day:'numeric', month:'long', year:'numeric', timeZone:config.timezone });
   const content = posts.map(post => {
-    const key = dayFormat.format(new Date(post.created_at));
-    const heading = key !== day ? `${day ? '</section>' : ''}<section class="day-group"><h2 class="day-heading">${e(key)}</h2>` : '';
-    day = key;
+    const key = dayKey(post.created_at, config.timezone);
+    let heading = '';
+    if (key !== day) {
+      const weather = config.dayWeather?.get(key);
+      heading = `${day ? '</section>' : ''}<section class="day-group">${renderDayHeading(key, dayFormat.format(new Date(post.created_at)), weather, config.dayMoods?.get(key))}`;
+      day = key;
+    }
     return heading + renderPost(post, { editor, store, timezone:config.timezone, permalink:single, config, palette });
   }).join('') + (day ? '</section>' : '');
   const title = single && posts[0] ? `${excerpt(posts[0].body, 70)} · ridge` : 'ridge';

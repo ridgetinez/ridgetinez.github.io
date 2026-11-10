@@ -5,10 +5,11 @@ import { inside, replaceDirectory, resolveDestination } from './files.js';
 import { siteConfiguration, sitePath } from './urls.js';
 import { renderPage, renderRSS, mascotMarkup, mascotScript } from './render.js';
 import { escapeHTML as e } from './markdown.js';
+import { dayKey } from './calendar.js';
 import { archiveFiles } from './archive.js';
 import { sanitizeDiagramSVG } from './diagrams.js';
 
-export async function buildSite({ contentDir = path.join(projectRoot,'content'), outputDir = path.join(projectRoot,'dist'), siteURL, timezone, archiveDir } = {}) {
+export async function buildSite({ contentDir = path.join(projectRoot,'content'), outputDir = path.join(projectRoot,'dist'), siteURL, timezone, archiveDir, loadWeather } = {}) {
   contentDir = await realpath(contentDir);
   outputDir = await resolveDestination(outputDir);
   if (contentDir === outputDir || inside(contentDir,outputDir) || inside(outputDir,contentDir)) throw new Error('Build output must be separate from content.');
@@ -44,6 +45,14 @@ export async function buildSite({ contentDir = path.join(projectRoot,'content'),
   }
   for (const post of posts) if (post.links.some(id => !ids.has(id))) throw new Error(`Broken reference in ${post.id}. Re-export the vault.`);
   posts.sort((a,b) => b.created_at.localeCompare(a.created_at) || b.id.localeCompare(a.id));
+  const days = new Set();
+  config.dayMoods = new Map();
+  for (const post of posts) {
+    const day = dayKey(post.created_at, config.timezone);
+    days.add(day);
+    if (typeof post.day_mood === 'string' && post.day_mood && !config.dayMoods.has(day)) config.dayMoods.set(day, post.day_mood);
+  }
+  if (loadWeather) config.dayWeather = await loadWeather([...days]);
   const tags = [...new Set(posts.flatMap(post => post.tags))].sort();
   const store = { backlinks:id => posts.filter(post => post.links.includes(id)) };
 

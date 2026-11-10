@@ -82,7 +82,9 @@ export async function exportVault(vault, output) {
     const values = Array.isArray(p.tags) ? p.tags : p.tags ? [p.tags] : [];
     const tags = [...new Set(values.map(tag => String(tag).replace(/^#/,'').trim().toLowerCase()))];
     if (tags.length > 8 || tags.some(tag => !/^[\p{L}\p{N}][\p{L}\p{N}-]{0,29}$/u.test(tag))) throw new Error(`${filename}: use up to eight short tags containing letters, numbers or hyphens.`);
-    entries.push({ filename, properties:p, id, date:new Date(date).toISOString(), tags, body:parsed.body });
+    const mood = p.day_mood === undefined ? '' : p.day_mood;
+    if (typeof mood !== 'string' || !/^[^\p{Cc}\u2028\u2029]{0,60}$/u.test(mood)) throw new Error(`${filename}: day_mood must be a single line of text up to 60 characters.`);
+    entries.push({ filename, properties:p, id, date:new Date(date).toISOString(), tags, mood:mood.trim(), body:parsed.body });
   }
   if (new Set(entries.map(entry => entry.id)).size !== entries.length) throw new Error('Two published notes have the same id. Give them distinct ids.');
   const byFile = new Map(entries.map(entry => [entry.filename, entry]));
@@ -184,7 +186,7 @@ export async function exportVault(vault, output) {
       validate(markdownTokens(body));
       if (!body && !attachments.length) throw new Error(`${entry.filename}: this published entry is empty.`);
       if (body.length > 30000) throw new Error(`${entry.filename}: keep entries under 30,000 characters.`);
-      posts.push({ id:entry.id, body, tags:entry.tags, links:[...links], created_at:entry.date, attachments, ...(diagrams.length ? {diagrams} : {}) });
+      posts.push({ id:entry.id, body, tags:entry.tags, links:[...links], created_at:entry.date, attachments, ...(diagrams.length ? {diagrams} : {}), ...(entry.mood ? {day_mood:entry.mood} : {}) });
     }
     posts.sort((a,b) => b.created_at.localeCompare(a.created_at) || b.id.localeCompare(a.id));
     await writeFile(path.join(stage,'posts.json'),JSON.stringify({version:1,posts},null,2) + '\n');

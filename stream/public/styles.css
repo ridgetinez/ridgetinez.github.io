@@ -33,6 +33,25 @@ footer{display:flex;gap:18px}
 .filters{column-gap:10px;row-gap:9px;margin-left:0}
 .filters .filter{--filter-ink:var(--tag-ink);--filter-wash:var(--tag-wash);display:inline-flex;align-items:center;min-height:26px;padding:1px 8px;border-radius:4px;color:var(--filter-ink);background:var(--filter-wash);box-shadow:0 1px 0 color-mix(in srgb,var(--filter-ink) 18%,transparent);line-height:24px;transition:transform .2s ease,box-shadow .2s ease}
 .filters .filter-all{--filter-ink:var(--nasturtium);--filter-wash:var(--nasturtium-wash)}
+
+/* Pixel accents carry the margin garden into the day breaks. */
+.day-header{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;column-gap:12px;row-gap:4px;margin-bottom:22px;padding-bottom:7px;background:repeating-linear-gradient(90deg,var(--edge) 0 2px,transparent 2px 5px) bottom/100% 1px no-repeat}
+.day-header .day-heading{display:flex;align-items:center;gap:8px;margin:0}
+.day-flower,.day-sky{flex:none;display:block}
+.sky-sun{fill:light-dark(#b98639,#e6b568)}.sky-cloud{fill:light-dark(#82938b,#a6bab0)}.sky-water{fill:light-dark(#678baa,#8fb6d5)}
+.day-context,.day-weather{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:3px 5px;font-size:11px;line-height:17px;color:var(--muted)}
+.day-weather{font-variant-numeric:tabular-nums}
+.day-place{font-size:10px;color:light-dark(#526c56,#abc2a9);text-decoration:none}
+.day-place:hover,.day-place:focus-visible{text-decoration:underline}
+.day-stat{display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+.day-stat+.day-stat:not(.day-gust)::before{content:"";width:2px;height:2px;margin-right:2px;background:currentColor}
+.day-mood{color:var(--nasturtium);overflow-wrap:anywhere}
+.day-visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+@media(max-width:520px){
+  .day-header{grid-template-columns:minmax(0,1fr)}
+  .day-context,.day-weather{justify-content:flex-start}
+  .day-context{padding-left:26px}
+}
 .filters .filter[aria-current=page]{color:var(--filter-ink);background:var(--filter-wash);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--filter-ink) 36%,transparent),0 1px 0 color-mix(in srgb,var(--filter-ink) 18%,transparent)}
 .filters .filter:hover{transform:translateY(-1px)}
 @media(pointer:coarse){.filters .filter{min-height:44px}}

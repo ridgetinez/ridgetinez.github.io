@@ -74,7 +74,7 @@ test('publishing, editing, tags, permalinks, backlinks, RSS and archive/restore 
   const second = await f.post(`${f.editorURL}/api/posts`,{body:`[[${recipe.id}|dumplings v3]] — less water for v4.`,tags:'cooking',createdAt:'2026-10-24T01:00:00Z'});
   assert.equal(second.status,201); const note = (await second.json()).post;
   const html = await (await fetch(`${f.publicURL}/p/${recipe.id}`)).text();
-  assert.match(html,/<h2 class="day-heading">23 October 2026/); assert.match(html,/class="katex/); assert.match(html,/hljs-keyword/); assert.ok(html.includes(`/p/${note.id}`));
+  assert.match(html,/<time datetime="2026-10-23">23 October 2026<\/time><\/h2>/); assert.match(html,/class="katex/); assert.match(html,/hljs-keyword/); assert.ok(html.includes(`/p/${note.id}`));
   assert.equal((await (await fetch(`${f.publicURL}/api/posts?tag=cooking`)).json()).length,2);
   const feed = await (await fetch(`${f.publicURL}/feed.xml`)).text(); assert.match(feed,/<rss /); assert.ok(feed.includes(recipe.id));
   assert.equal((await f.post(`${f.editorURL}/api/posts/${recipe.id}`,{body:'Changed recipe',tags:['cooking']})).status,200);

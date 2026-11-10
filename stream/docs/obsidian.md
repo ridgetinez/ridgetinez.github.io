@@ -44,6 +44,8 @@ Keep `id` unchanged, even if you rename or move the note: it is the public addre
 
 `date` is the moment of the entry, including your timezone offset. The template supplies it automatically. Backdate it to describe something earlier. `created` is accepted as an alternative property. Dates without an offset are rejected so a GitHub runner cannot silently change the day. The site groups days in Australia/Sydney by default.
 
+The public build can show daytime weather from Sydney Airport station reports, with the sampled temperature range and peak gusts of at least 60 km/h. The station label links to the Iowa Environmental Mesonet archive. To add a public mood, set the optional text property `day_mood` on a prepared Stream note, for example `day_mood: "Slow and cosy"`. Use a single line up to 60 characters. If more than one published note supplies a mood for the same day, the latest one with a mood supplies the heading.
+
 ## A stream entry is a note
 
 Use one note for a run, a coffee, an unfinished proof or a recipe iteration. This keeps each thing independently taggable and linkable. Filenames and frontmatter don't become headings on the site; only the body does. Add a heading when you actually want one.

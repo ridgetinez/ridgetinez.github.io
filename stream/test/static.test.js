@@ -6,6 +6,7 @@ import { mkdtemp, mkdir, readFile, writeFile, rm, readdir, copyFile, symlink } f
 import sharp from 'sharp';
 import { exportVault } from '../src/vault.js';
 import { buildSite } from '../src/static.js';
+import { loadSydneyWeather } from '../src/weather.js';
 import { previewSite } from '../scripts/preview.js';
 
 async function fixture(t) {
@@ -87,6 +88,54 @@ test('static build supports project paths, root domains, filters, pagination, ba
   await buildSite({...f,siteURL:'https://ridge.example/'});
   assert.match(await readFile(path.join(f.outputDir,'index.html'),'utf8'),/href="\/tag\/coffee\/"/);
   assert.match(await readFile(path.join(f.outputDir,'feed.xml'),'utf8'),/https:\/\/ridge.example\/p\/n-0\//);
+});
+
+test('day headings share observed daytime weather and an explicitly published mood across feed views', async t => {
+  const f = await fixture(t);
+  await f.note('morning', 'First post.');
+  await writeFile(path.join(f.vault,'evening.md'), '---\nid: evening\ndate: 2026-10-24T20:00:00+11:00\npublish: true\ntags: [walk]\nday_mood: "Slow & cosy <3"\n---\nSecond post.');
+  await writeFile(path.join(f.vault,'wet.md'), '---\nid: wet\ndate: 2026-10-20T20:00:00+11:00\npublish: true\n---\nA rainy afternoon.');
+  await writeFile(path.join(f.vault,'older.md'), '---\nid: older\ndate: 2026-10-15T20:00:00+11:00\npublish: true\n---\nAn older post.');
+  await writeFile(path.join(f.vault,'private.md'), '---\npublish: false\nday_mood: Private mood\n---\nA private note.');
+  await exportVault(f.vault,f.contentDir);
+  const request = async url => {
+    assert.equal(url.searchParams.get('station'), 'YSSY');
+    assert.equal(url.searchParams.get('tz'), 'Australia/Sydney');
+    assert.equal(url.searchParams.get('day2'), '25');
+    return new Response([
+      'station,valid,tmpc,gust,wxcodes,skyc1,skyc2,skyc3,skyc4',
+      'YSSY,2026-10-20 15:00,17,,-SHRA,BKN,,,',
+      'YSSY,2026-10-24 02:00,15,,-SHRA,BKN,,,',
+      'YSSY,2026-10-24 09:00,16,,VCSH,FEW,BKN,,',
+      'YSSY,2026-10-24 15:00,23,33,,NCD,,,',
+    ].join('\n'));
+  };
+  await buildSite({
+    ...f,
+    loadWeather: days => loadSydneyWeather(days, { now: new Date('2026-10-23T23:00:00Z'), request }),
+  });
+  const flower = html => html.match(/<svg class="day-flower"[^>]*>[\s\S]*?<\/svg>/)?.[0];
+  const flowers = [];
+  for (const relative of ['index.html','tag/coffee/index.html','p/morning/index.html']) {
+    const html = await readFile(path.join(f.outputDir,relative),'utf8');
+    assert.equal(html.match(/<time datetime="2026-10-24">24 October 2026<\/time>/g)?.length, 1);
+    const heading = html.match(/<header class="day-header">[\s\S]*?<\/header>/)?.[0];
+    assert.ok(flower(heading));
+    flowers.push(flower(heading));
+    assert.match(heading, /Sydney Airport<\/a>.*Cloudy → sunny.*15–23°C/);
+    assert.match(heading, /Gusts <\/span>61 km\/h/);
+    assert.doesNotMatch(heading, /Rain|Showers|forecast/i);
+    assert.match(html, /Slow &amp; cosy &lt;3/);
+    assert.doesNotMatch(html.match(/<footer>.*?<\/footer>/)?.[0], /Sydney|Mesonet|weather/);
+    assert.doesNotMatch(html, /Private mood/);
+  }
+  assert.equal(new Set(flowers).size, 1);
+  assert.match(await readFile(path.join(f.outputDir,'p/wet/index.html'),'utf8'), /Showers PM/);
+  const older = await readFile(path.join(f.outputDir,'p/older/index.html'),'utf8');
+  assert.match(older, /<time datetime="2026-10-15">15 October 2026<\/time>/);
+  assert.ok(flower(older));
+  assert.notEqual(flower(older), flowers[0]);
+  assert.doesNotMatch(older, /class="day-(?:weather|mood)"/);
 });
 
 test('all tag names get distinct colours shared by filters, entries and permalinks', async t => {
